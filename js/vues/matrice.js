@@ -1,7 +1,7 @@
 // Vue « Matrice » : colonne À classer + 4 cases, glisser-déposer des cartes
 import { etat, $, hooks, CASES, LIMITE_CASE_1, TERMINES, memoriserFiltre } from '../noyau/etat.js';
 import { echapper, dateFr, joursAvant, classeStatut, bloquantes, tacheParId, parEcheance, toast } from '../noyau/outils.js';
-import { enregistrer } from '../noyau/api.js';
+import { enregistrer } from '../noyau/stockage.js';
 import { boutonsCategories, filtreActif, filtreCategorie } from '../composants/categories.js';
 import { ouvrirFiche } from '../composants/fiche.js';
 import { boutonSupprimer } from '../composants/suppression.js';

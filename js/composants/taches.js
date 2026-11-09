@@ -3,7 +3,7 @@
 // (ou Entrée pour un titre, Échap pour annuler) et c'est enregistré.
 import { $ } from '../noyau/etat.js';
 import { echapper, dateFr, classeStatut, tacheParId, toast } from '../noyau/outils.js';
-import { enregistrer } from '../noyau/api.js';
+import { enregistrer } from '../noyau/stockage.js';
 import { boutonSupprimer } from './suppression.js';
 
 export function listeTaches(taches) {

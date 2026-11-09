@@ -2,7 +2,7 @@
 // toujours après confirmation, puis « Annuler » possible pendant 8 s.
 import { etat, $, hooks } from '../noyau/etat.js';
 import { tacheParId, toast } from '../noyau/outils.js';
-import { enregistrer } from '../noyau/api.js';
+import { enregistrer } from '../noyau/stockage.js';
 
 export async function supprimerTache(id) {
   const t = tacheParId(id);

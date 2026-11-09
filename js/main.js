@@ -1,11 +1,11 @@
 // Corps de la page : en-tête, onglets, choix de la vue, démarrage.
 // Chaque fonction principale vit dans son propre fichier :
-//   noyau/      état partagé, outils, échanges avec le serveur
+//   noyau/      état partagé, outils, enregistrement sur l'appareil
 //   composants/ jalons, catégories, liste des tâches, fiche
 //   vues/       tableau de bord, matrice, calendrier
 import { etat, $, hooks } from './noyau/etat.js';
 import { dateFr, joursAvant, tacheParId } from './noyau/outils.js';
-import { charger, surveiller, marquerConnexion } from './noyau/api.js';
+import { charger, surveiller, marquerConnexion } from './noyau/stockage.js';
 import { afficherFiche, fermerFiche } from './composants/fiche.js';
 import { afficherAccueil } from './vues/accueil.js';
 import { afficherMatrice } from './vues/matrice.js';

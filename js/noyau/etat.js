@@ -1,7 +1,6 @@
 // État partagé de la page et constantes communes
 export const etat = {
   donnees: null,
-  version: null,
   serveurOk: false,
   ficheId: null,      // tâche ouverte dans la fiche (panneau de droite)
   glisse: false,      // une carte est en train d'être déplacée

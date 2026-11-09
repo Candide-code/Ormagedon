@@ -1,7 +1,7 @@
 // Fiche de tâche : panneau de droite pour tout modifier
 import { etat, $, hooks, CASES } from '../noyau/etat.js';
 import { echapper, dateFr, classeStatut, tacheParId, categorieDe, toast } from '../noyau/outils.js';
-import { enregistrer } from '../noyau/api.js';
+import { enregistrer } from '../noyau/stockage.js';
 import { jalonsTries } from './jalons.js';
 import { supprimerTache } from './suppression.js';
 import { sectionLiens, apresAffichageLiens, clicLiens, toucheLiens, sortieLiens, reinitialiserLiens, brancherLiens } from './liens.js';
