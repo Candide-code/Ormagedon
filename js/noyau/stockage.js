@@ -43,15 +43,53 @@ export function mettreAJourDonnees(d) {
   return true;
 }
 
-// Lit un projet et le met à jour. Un projet trop récent est marqué pour ne pas être écrasé.
+// Données toujours complètes : ce qui manque est ajouté vide, rien n'est supprimé
+// (sauf l'ancien « code » des catégories, qui ne sert plus). Protège l'app d'un projet
+// ancien, importé ou modifié à la main.
+const STATUTS = ['À faire', 'En cours', 'Fait', 'Reporté', 'Abandonné'];
+const CASES_VALIDES = ['a_classer', 'q1', 'q2', 'q3', 'q4'];
+const texte = (v, defaut = '') => (typeof v === 'string' ? v : defaut);
+const liste = (v) => (Array.isArray(v) ? v : []);
+
+export function completerDonnees(d) {
+  const p = d.projet && typeof d.projet === 'object' ? d.projet : {};
+  d.projet = { ...p, nom: texte(p.nom), deadline: texte(p.deadline) || null, creeLe: texte(p.creeLe, d.modifieLe || new Date().toISOString()) };
+  if (!liste(d.statuts).length) d.statuts = [...STATUTS];
+  d.categories = liste(d.categories).filter((c) => c && texte(c.nom)).map((c) => {
+    const { code, ...reste } = c; // l'ancien code (lettre) ne sert plus
+    return { ...reste, nom: c.nom, sous: liste(c.sous).filter((s) => typeof s === 'string') };
+  });
+  d.jalons = liste(d.jalons).filter((j) => j && j.id).map((j) => ({ ...j, date: texte(j.date), titre: texte(j.titre) }));
+  d.taches = liste(d.taches).filter((t) => t && t.id).map((t) => ({
+    ...t,
+    titre: texte(t.titre).trim() ? t.titre : 'Sans titre',
+    description: texte(t.description),
+    categorie: texte(t.categorie),
+    sousCategorie: texte(t.sousCategorie),
+    statut: d.statuts.includes(t.statut) ? t.statut : 'À faire', // statut inconnu (ex. venu de Trudy)
+    case: CASES_VALIDES.includes(t.case) ? t.case : 'a_classer',
+    echeance: texte(t.echeance),
+    jalons: liste(t.jalons),
+    todo: liste(t.todo).filter((x) => x && typeof x.texte === 'string'),
+    liens: liste(t.liens).filter((l) => l && typeof l.url === 'string').map((l) => ({ ...l, libelle: texte(l.libelle, l.url) })),
+    dependances: liste(t.dependances),
+    notes: texte(t.notes),
+  }));
+  return d;
+}
+
+// Lit un projet, le met à jour et le complète. Un projet trop récent est marqué pour ne pas être écrasé.
 function lireProjet(id) {
   const d = lire(cleProjet(id));
-  if (!d) return null;
+  if (!d || typeof d !== 'object') return null;
+  d.id = id;
   if (!mettreAJourDonnees(d)) {
     d.tropRecent = true;
     toast("Ce projet vient d'une version plus récente d'Ormagedon : recharge la page pour mettre l'app à jour. Tes modifications ne seront pas enregistrées d'ici là.");
   }
-  return d;
+  // Complété aussi quand il est trop récent : seulement pour l'afficher sans planter,
+  // il n'est jamais enregistré dans ce cas.
+  return completerDonnees(d);
 }
 
 // Projet vide créé au premier lancement.
@@ -63,7 +101,7 @@ function projetVide() {
     id: 'p-' + Date.now(),
     projet: { nom: 'Mon projet', deadline: null, creeLe: maintenant },
     categories: [],
-    statuts: ['À faire', 'En cours', 'Fait', 'Reporté', 'Abandonné'],
+    statuts: [...STATUTS],
     jalons: [],
     taches: [],
     modifieLe: maintenant,

@@ -20,7 +20,10 @@ function vueActive() {
 
 function afficherEntete() {
   const d = etat.donnees;
-  document.title = d.titre || 'Ormagedon';
+  // Nom du projet : sous « Ormagedon » dans l'en-tête, et dans l'onglet du navigateur
+  const nom = ((d.projet && d.projet.nom) || '').trim();
+  $('sous-titre').textContent = nom;
+  document.title = nom ? `${nom} · Ormagedon` : 'Ormagedon';
   // Compte à rebours vers la deadline du projet : J-12 avant, J-0 le jour même, J+3 après.
   // Pas de deadline : rien ne s'affiche.
   const deadline = d.projet && d.projet.deadline;

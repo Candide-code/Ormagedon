@@ -33,6 +33,9 @@ body {
 /* En-tête */
 .entete { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 28px 32px 20px; }
 .entete h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+/* Logo : l'anneau-jalon à la place du « O », à la taille d'une majuscule */
+.logo { display: flex; align-items: center; line-height: 1.2; }
+.logo-o { width: 0.86em; height: 0.86em; margin-right: 0.03em; position: relative; top: 0.03em; flex: none; }
 .entete p { margin: 2px 0 0; }
 .compte { text-align: right; }
 .compte .nombre { font-size: 30px; font-weight: 600; color: var(--violet-clair); line-height: 1; }
