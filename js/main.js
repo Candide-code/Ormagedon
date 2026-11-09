@@ -4,8 +4,8 @@
 //   composants/ jalons, catégories, liste des tâches, fiche
 //   vues/       tableau de bord, matrice, calendrier
 import { etat, $, hooks } from './noyau/etat.js';
-import { dateFr, joursAvant, tacheParId } from './noyau/outils.js';
-import { charger, surveiller, marquerConnexion } from './noyau/stockage.js';
+import { dateFr, joursAvant, tacheParId, texteModifieLe } from './noyau/outils.js';
+import { charger } from './noyau/stockage.js';
 import { afficherFiche, fermerFiche } from './composants/fiche.js';
 import { afficherAccueil } from './vues/accueil.js';
 import { afficherMatrice } from './vues/matrice.js';
@@ -31,7 +31,7 @@ function afficherEntete() {
   } else {
     $('compte').innerHTML = '';
   }
-  $('maj').textContent = d.modifieLe ? 'Dernière modification : ' + new Date(d.modifieLe).toLocaleString('fr-FR') : '';
+  $('maj').textContent = texteModifieLe(d.modifieLe);
 }
 
 function afficher() {
@@ -62,7 +62,4 @@ document.querySelectorAll('.onglet').forEach((b) => b.addEventListener('click', 
 }));
 window.addEventListener('hashchange', afficher);
 
-charger()
-  .then(() => marquerConnexion(true))
-  .catch(() => marquerConnexion(false));
-setInterval(surveiller, 3000);
+charger();

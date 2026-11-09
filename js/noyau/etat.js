@@ -1,7 +1,7 @@
 // État partagé de la page et constantes communes
 export const etat = {
   donnees: null,
-  serveurOk: false,
+  enregistrementOk: false, // dernier enregistrement sur l'appareil réussi ?
   ficheId: null,      // tâche ouverte dans la fiche (panneau de droite)
   glisse: false,      // une carte est en train d'être déplacée
   focusRecherche: false,

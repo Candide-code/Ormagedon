@@ -9,6 +9,14 @@ export function joursAvant(dateIso) {
 
 export const dateFr = (iso) => { const [, m, j] = iso.split('-'); return `${j}/${m}`; };
 
+// Pied de page : « Modifié le 09/11 à 13:35 » (heure locale), rien si pas de date
+export function texteModifieLe(isoComplet) {
+  const d = isoComplet ? new Date(isoComplet) : null;
+  if (!d || isNaN(d)) return '';
+  const deux = (n) => String(n).padStart(2, '0');
+  return `Modifié le ${deux(d.getDate())}/${deux(d.getMonth() + 1)} à ${deux(d.getHours())}:${deux(d.getMinutes())}`;
+}
+
 export function echapper(t) {
   return String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
