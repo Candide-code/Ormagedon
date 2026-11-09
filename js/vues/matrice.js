@@ -96,16 +96,17 @@ export function afficherMatrice() {
   }
 }
 
-// Nouvelle tâche : code = lettre de la catégorie + numéro suivant.
-// Elle prend la catégorie (et sous-catégorie) du filtre actif.
+// Nouvelle tâche : code = T + numéro suivant (T1, T2…), quelle que soit la catégorie.
+// Avec un filtre de catégorie actif, elle prend cette catégorie (et sous-catégorie) ;
+// sans filtre (« Toutes ») ou avec « Sans catégorie », elle est sans catégorie.
 async function nouvelleTache() {
   const d = etat.donnees;
-  const { cat: catFiltre, sous } = filtreActif();
-  const cat = catFiltre || d.categories[0];
-  const nums = d.taches.filter((t) => t.id.startsWith(cat.code)).map((t) => parseInt(t.id.slice(cat.code.length), 10) || 0);
-  const id = cat.code + (Math.max(0, ...nums) + 1);
+  const { cat, sous } = filtreActif();
+  const nums = d.taches.map((t) => /^T(\d+)$/.exec(t.id)).filter(Boolean).map((m) => +m[1]);
+  const id = 'T' + (Math.max(0, ...nums) + 1);
   d.taches.push({
-    id, titre: 'Nouvelle tâche', description: '', categorie: cat.nom, sousCategorie: sous || cat.sous[0],
+    id, titre: 'Nouvelle tâche', description: '',
+    categorie: cat ? cat.nom : '', sousCategorie: cat ? (sous || cat.sous[0] || '') : '',
     statut: 'À faire', case: 'a_classer', echeance: '', jalons: [], todo: [], liens: [], dependances: [], notes: '',
   });
   hooks.afficher();

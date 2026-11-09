@@ -4,15 +4,21 @@
 import { etat, $, hooks, memoriserFiltre } from '../noyau/etat.js';
 import { echapper } from '../noyau/outils.js';
 
-// Filtre actif, ignoré si la catégorie n'existe plus
+// Valeur du filtre « Sans catégorie » (tâches dont la catégorie est vide)
+export const SANS_CATEGORIE = '∅';
+
+// Filtre actif, ignoré si la catégorie n'existe plus.
+// sans = true quand le filtre « Sans catégorie » est choisi.
 export function filtreActif() {
+  if (etat.filtre.categorie === SANS_CATEGORIE) return { cat: null, sous: '', sans: true };
   const [nom, sous] = (etat.filtre.categorie || '').split('›');
   const cat = etat.donnees.categories.find((c) => c.nom === nom) || null;
-  return { cat, sous: cat && cat.sous.includes(sous) ? sous : '' };
+  return { cat, sous: cat && cat.sous.includes(sous) ? sous : '', sans: false };
 }
 
 export function filtreCategorie(t) {
-  const { cat, sous } = filtreActif();
+  const { cat, sous, sans } = filtreActif();
+  if (sans) return !t.categorie;
   if (!cat) return true;
   return t.categorie === cat.nom && (!sous || t.sousCategorie === sous);
 }
@@ -23,15 +29,19 @@ function puce(valeur, contenu, nb, active) {
 
 export function boutonsCategories() {
   const { categories, taches } = etat.donnees;
-  const { cat, sous } = filtreActif();
+  const { cat, sous, sans } = filtreActif();
+  const nbSans = taches.filter((t) => !t.categorie).length;
   const lignePrincipale = [
-    puce('', 'Toutes', taches.length, !cat),
+    puce('', 'Toutes', taches.length, !cat && !sans),
     ...categories.map((c) => {
       const active = cat === c;
       // Re-cliquer sur la catégorie active retire le filtre
       return puce(active && !sous ? '' : c.nom, `<span class="lettre">${echapper(c.code)}</span>${echapper(c.nom)}`,
         taches.filter((t) => t.categorie === c.nom).length, active);
     }),
+    // « Sans catégorie » : seulement si le projet a des catégories et des tâches sans catégorie
+    // (ou si ce filtre est déjà choisi, pour pouvoir le retirer)
+    (categories.length && nbSans) || sans ? puce(sans ? '' : SANS_CATEGORIE, 'Sans catégorie', nbSans, sans) : '',
   ].join('');
   const sousLigne = cat ? `
     <div class="puces sous-puces" aria-label="Sous-catégories">

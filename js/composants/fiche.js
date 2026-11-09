@@ -47,8 +47,8 @@ export function afficherFiche() {
     <div class="fiche-grille">
       ${champ('Statut', select('statut', d.statuts, t.statut))}
       ${champ('Case de la matrice', select('case', [{ valeur: 'a_classer', libelle: 'À classer' }, ...CASES.map((c) => ({ valeur: c.id, libelle: c.id.slice(1) + ' · ' + c.nom }))], t.case || 'a_classer'))}
-      ${champ('Catégorie', select('categorie', d.categories.map((c) => c.nom), t.categorie))}
-      ${champ('Sous-catégorie', select('sousCategorie', cat ? cat.sous : [], t.sousCategorie))}
+      ${champ('Catégorie', select('categorie', [{ valeur: '', libelle: 'Sans catégorie' }, ...d.categories.map((c) => c.nom)], t.categorie || ''))}
+      ${cat && cat.sous.length ? champ('Sous-catégorie', select('sousCategorie', cat.sous, t.sousCategorie)) : ''}
       ${champ('Échéance', `<input type="date" data-champ="echeance" value="${echapper(t.echeance)}">`)}
     </div>
 
@@ -126,7 +126,7 @@ fiche.addEventListener('change', async (e) => {
     await modifierTache(t, (x) => {
       x[nom] = valeur;
       // Nouvelle catégorie : on prend sa première sous-catégorie
-      if (nom === 'categorie') { const c = categorieDe(x); x.sousCategorie = c ? c.sous[0] : ''; }
+      if (nom === 'categorie') { const c = categorieDe(x); x.sousCategorie = (c && c.sous[0]) || ''; }
     });
     if (['categorie', 'statut', 'case'].includes(nom)) afficherFiche();
     return;

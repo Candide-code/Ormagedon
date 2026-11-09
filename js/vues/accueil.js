@@ -19,8 +19,9 @@ function blocStatuts() {
 export function afficherAccueil() {
   const d = etat.donnees;
   const taches = d.taches.filter(filtreCategorie).sort(parEcheance);
-  const { cat, sous } = filtreActif();
-  const titreListe = cat ? `${echapper(cat.nom)}${sous ? ' › ' + echapper(sous) : ''}` : 'Toutes les tâches';
+  const { cat, sous, sans } = filtreActif();
+  const titreListe = sans ? 'Sans catégorie'
+    : cat ? `${echapper(cat.nom)}${sous ? ' › ' + echapper(sous) : ''}` : 'Toutes les tâches';
 
   $('contenu').innerHTML = `
     ${d.taches.length === 0 ? `
