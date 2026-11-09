@@ -36,6 +36,10 @@ body {
 /* Logo : l'anneau-jalon à la place du « O », à la taille d'une majuscule */
 .logo { display: flex; align-items: center; line-height: 1.2; }
 .logo-o { width: 0.86em; height: 0.86em; margin-right: 0.03em; position: relative; top: 0.03em; flex: none; }
+/* Le logo est un lien vers « Mes projets » : même aspect, s'éclaircit au survol */
+.logo-lien { display: flex; align-items: center; color: inherit; text-decoration: none; border-radius: 6px; transition: opacity 0.15s; }
+.logo-lien:hover { opacity: 0.8; }
+.logo-lien:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
 .entete p { margin: 2px 0 0; }
 .compte { text-align: right; }
 .compte .nombre { font-size: 30px; font-weight: 600; color: var(--violet-clair); line-height: 1; }

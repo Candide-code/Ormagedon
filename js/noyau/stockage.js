@@ -132,6 +132,42 @@ export async function charger() {
   else marquerEnregistrement(ok);
 }
 
+// Pour la page « Mes projets » : tous les projets, le plus récemment modifié en premier.
+// On lit chaque projet pour compter ses tâches (un projet disparu est ignoré).
+export function listerProjets() {
+  return (lire(CLE_LISTE) || [])
+    .map((p) => {
+      const d = lire(cleProjet(p.id));
+      if (!d || typeof d !== 'object') return null;
+      const taches = Array.isArray(d.taches) ? d.taches : [];
+      return {
+        id: p.id,
+        nom: (d.projet && d.projet.nom) || '',
+        deadline: (d.projet && d.projet.deadline) || null,
+        modifieLe: d.modifieLe || '',
+        nbTaches: taches.length,
+        nbFaites: taches.filter((t) => t && t.statut === 'Fait').length,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.modifieLe.localeCompare(a.modifieLe));
+}
+
+// Ouvre un autre projet (depuis « Mes projets »). Attend la fin des enregistrements
+// en cours pour ne jamais écrire un projet dans un autre.
+export async function ouvrirProjet(id) {
+  await file;
+  const d = lireProjet(id);
+  if (!d) { toast('Projet introuvable'); return false; }
+  etat.donnees = d;
+  aRecharger = false;
+  let ok = true;
+  try { ecrire(CLE_DERNIER, id); } catch { ok = false; }
+  if (d.tropRecent) marquerEnregistrement(false, 'version');
+  else marquerEnregistrement(ok);
+  return true;
+}
+
 // Met à jour la fiche du projet dans la liste des projets
 function mettreAJourListe(d) {
   const liste = (lire(CLE_LISTE) || []).filter((p) => p.id !== d.id);
@@ -226,5 +262,6 @@ export function marquerEnregistrement(ok, raison = 'stockage') {
     : raison === 'version'
       ? "Non enregistré : version plus récente de l'app"
       : 'Non enregistré : stockage plein ou bloqué';
-  $('maj').textContent = texteModifieLe(etat.donnees && etat.donnees.modifieLe);
+  // Sur « Mes projets », aucun projet n'est affiché : pas de date
+  $('maj').textContent = location.hash === '#projets' ? '' : texteModifieLe(etat.donnees && etat.donnees.modifieLe);
 }

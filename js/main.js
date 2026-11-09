@@ -2,16 +2,17 @@
 // Chaque fonction principale vit dans son propre fichier :
 //   noyau/      état partagé, outils, enregistrement sur l'appareil
 //   composants/ jalons, catégories, liste des tâches, fiche
-//   vues/       tableau de bord, matrice, calendrier
+//   vues/       mes projets, tableau de bord, matrice, calendrier
 import { etat, $, hooks } from './noyau/etat.js';
 import { dateFr, joursAvant, tacheParId, texteModifieLe } from './noyau/outils.js';
 import { charger } from './noyau/stockage.js';
 import { afficherFiche, fermerFiche } from './composants/fiche.js';
+import { afficherProjets } from './vues/projets.js';
 import { afficherAccueil } from './vues/accueil.js';
 import { afficherMatrice } from './vues/matrice.js';
 import { afficherCalendrier } from './vues/calendrier.js';
 
-const VUES = { accueil: afficherAccueil, matrice: afficherMatrice, calendrier: afficherCalendrier };
+const VUES = { projets: afficherProjets, accueil: afficherAccueil, matrice: afficherMatrice, calendrier: afficherCalendrier };
 
 function vueActive() {
   const v = location.hash.replace('#', '');
@@ -37,10 +38,25 @@ function afficherEntete() {
   $('maj').textContent = texteModifieLe(d.modifieLe);
 }
 
+// En-tête de « Mes projets » : pas de projet ouvert, donc ni nom ni compte à rebours
+function afficherEnteteProjets() {
+  $('sous-titre').textContent = '';
+  document.title = 'Mes projets · Ormagedon';
+  $('compte').innerHTML = '';
+  $('maj').textContent = '';
+}
+
 function afficher() {
   if (!etat.donnees) return;
-  afficherEntete();
   const vue = vueActive();
+  const surProjets = vue === 'projets';
+  document.body.classList.toggle('page-projets', surProjets); // cache les onglets
+  if (surProjets) {
+    if (etat.ficheId) fermerFiche();
+    afficherEnteteProjets();
+  } else {
+    afficherEntete();
+  }
   document.querySelectorAll('.onglet').forEach((b) => {
     const actif = b.dataset.vue === vue;
     b.classList.toggle('actif', actif);

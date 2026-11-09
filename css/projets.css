@@ -1,0 +1,15 @@
+/* Page « Mes projets » : une carte par projet */
+.page-projets .onglets { display: none; }
+.projets-tete h2 {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--discret);
+}
+.grille-projets { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.carte-projet {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  font: inherit; font-size: 14px; color: var(--texte); cursor: pointer;
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
+  padding: 16px 18px;
+}
+.carte-projet:hover { border-color: var(--violet); }
+.carte-projet-nom { font-size: 16px; font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
