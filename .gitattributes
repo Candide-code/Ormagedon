@@ -1,0 +1,6 @@
+# Fins de ligne : Git range tous les fichiers texte avec LF
+* text=auto eol=lf
+
+# Images et icônes : jamais touchées
+*.png binary
+*.ico binary
