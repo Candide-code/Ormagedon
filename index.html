@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ormagedon</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316161b'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%238b5cf6' stroke-width='7'/%3E%3Ccircle cx='43.3' cy='20.7' r='6.5' fill='%23ececf1' stroke='%2316161b' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/jalons.css">
+  <link rel="stylesheet" href="css/categories.css">
+  <link rel="stylesheet" href="css/taches.css">
+  <link rel="stylesheet" href="css/matrice.css">
+  <link rel="stylesheet" href="css/calendrier.css">
+  <link rel="stylesheet" href="css/fiche.css">
+</head>
+<body>
+  <header class="entete">
+    <div class="entete-gauche">
+      <h1>Ormagedon</h1>
+      <p class="discret" id="sous-titre"></p>
+    </div>
+    <div class="compte" id="compte" aria-live="polite"></div>
+  </header>
+
+  <nav class="onglets" aria-label="Vues">
+    <button class="onglet actif" data-vue="accueil" aria-current="page">Tableau de bord</button>
+    <button class="onglet" data-vue="matrice">Matrice</button>
+    <button class="onglet" data-vue="calendrier">Calendrier</button>
+  </nav>
+
+  <main id="contenu"></main>
+
+  <footer class="pied">
+    <span class="etat" id="etat"><span class="pastille"></span><span id="etat-texte">Connexion…</span></span>
+    <span class="discret" id="maj"></span>
+  </footer>
+
+  <div class="voile" id="voile"></div>
+  <aside class="fiche" id="fiche" aria-hidden="true" aria-label="Fiche de la tâche">
+    <div id="fiche-contenu"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

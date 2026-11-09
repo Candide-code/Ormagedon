@@ -1,0 +1,99 @@
+/* Vue Calendrier : graphique des échéances + colonne du jour choisi.
+   Couleurs limitées : gris (à faire), violet (en cours), vert (fait). */
+.cal-filtres { margin-bottom: 16px; }
+.cal { display: grid; grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 400px); gap: 16px; align-items: start; }
+
+.cal-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.cal-tete h2 { margin: 0; }
+.cal-legende { display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+.cal-legende span { display: inline-flex; align-items: center; gap: 6px; }
+.cal-legende .seg { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+
+.cal-defile { overflow-x: auto; padding-bottom: 4px; color-scheme: dark; }
+.cal-grille { display: grid; grid-template-columns: repeat(var(--jours), minmax(18px, 1fr)); min-width: calc(var(--jours) * 18px); }
+
+.semaine {
+  font: inherit; font-size: 11px; color: var(--discret); padding: 4px 6px; white-space: nowrap; overflow: hidden;
+  text-align: left; background: none; border: none; border-left: 1px solid var(--bordure); cursor: pointer;
+}
+.semaine:hover { color: var(--violet-clair); background: var(--violet-fond) !important; text-decoration: underline dotted; text-underline-offset: 3px; }
+.semaine.paire, .jour.paire { background: rgba(255, 255, 255, 0.025); }
+
+/* Une colonne par jour */
+.jour {
+  display: flex; flex-direction: column; align-items: stretch;
+  background: none; border: none; border-radius: 0; padding: 0; font: inherit; color: inherit;
+  min-width: 0;
+}
+button.jour { cursor: pointer; }
+.jour .cal-zone {
+  height: 220px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+  padding: 8px 3px 0; border-bottom: 1px solid var(--bordure); position: relative;
+}
+.jour .cal-nb { font-size: 12px; color: var(--discret); margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+.jour .cal-barre {
+  width: 100%; max-width: 26px; height: calc((100% - 24px) * var(--n) / var(--max));
+  min-height: 10px; display: flex; flex-direction: column-reverse; gap: 2px;
+}
+
+/* Un morceau par tâche, couleur = statut */
+.seg { flex: 1; background: #4a4a57; border-radius: 3px; min-height: 4px; }
+.seg.en-cours { background: var(--violet); }
+.seg.fait { background: var(--ok); }
+.seg.reporte, .seg.abandonne { background: none; border: 1px dashed #4a4a57; }
+
+.jour .cal-date {
+  height: 44px; font-size: 12px; writing-mode: vertical-rl; transform: rotate(180deg);
+  align-self: center; padding: 6px 0; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.jour .cal-marque { height: 18px; text-align: center; font-size: 12px; line-height: 18px; }
+.losange { color: var(--violet-clair); }
+
+/* Aujourd'hui : trait violet */
+.jour.aujourdhui .cal-zone::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px dashed var(--violet);
+  opacity: 0.7; pointer-events: none;
+}
+.jour.aujourdhui .cal-date { color: var(--violet-clair); }
+
+/* Survol et jour choisi */
+button.jour:hover .cal-zone { background: var(--violet-fond); }
+.jour.choisi .cal-zone, .jour.choisi .cal-date { background: var(--violet-fond); }
+.jour.choisi .cal-date { color: var(--texte); font-weight: 600; }
+button.jour:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
+
+.cal-note { margin: 10px 0 0; font-size: 13px; }
+
+/* Colonne de droite */
+.cal-jour { position: sticky; top: 16px; }
+.cal-jour h2 { margin-bottom: 0; }
+.cal-sous-titre { margin: 2px 0 12px; font-size: 13px; }
+.cal-jalons { list-style: none; margin: 0 0 12px; padding: 8px 10px; background: var(--violet-fond); border-radius: 8px; font-size: 14px; }
+.cal-jalons li + li { margin-top: 4px; }
+.cal-taches { list-style: none; margin: 0; padding: 0; }
+.cal-taches li { padding: 10px 0; border-top: 1px solid var(--bordure); font-size: 14px; }
+.cal-taches li:first-child { border-top: none; padding-top: 0; }
+.cal-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.cal-meta .etiquette { font-size: 12px; }
+
+@media (max-width: 900px) {
+  .cal { grid-template-columns: 1fr; }
+  .cal-jour { position: static; }
+}
+
+/* En-tête du graphique */
+.cal-titre { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cal-aide { font-size: 12px; }
+.cal-nav { display: inline-flex; gap: 4px; }
+.bouton.petit { font-size: 13px; padding: 3px 10px; }
+.bouton:disabled { opacity: 0.35; cursor: default; }
+.bouton:disabled:hover { border-color: var(--bordure); }
+
+/* Zoom sur une semaine : 7 colonnes larges, dates à l'horizontale */
+.cal-grille.zoom { grid-template-columns: repeat(7, minmax(80px, 1fr)); min-width: 560px; }
+.zoom .jour { border-left: 1px solid var(--bordure); }
+.zoom .jour:first-child { border-left: none; }
+.zoom .cal-barre { max-width: 64px; }
+.zoom .cal-date { writing-mode: horizontal-tb; transform: none; height: auto; padding: 8px 4px 2px; font-size: 13px; text-align: center; }
+.zoom .seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--texte); overflow: hidden; }
+.zoom .seg.fait { color: var(--fond); }

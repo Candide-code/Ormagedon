@@ -1,0 +1,18 @@
+# Notes de travail (pour nous, jamais publiées)
+CLAUDE.md
+ROADMAP.md
+
+# Outils (réglages locaux)
+.claude/
+.vscode/
+
+# Clés secrètes (jamais sur GitHub)
+.env
+
+# Fichiers système et temporaires
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*
+*.tmp
+*.log

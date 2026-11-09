@@ -1,0 +1,62 @@
+/* Vue matrice : barre de recherche, 4 cases, cartes */
+
+.barre { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.barre input[type="search"] { width: 240px; }
+.barre .bouton { margin-left: auto; }
+
+.matrice { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; margin-top: 6px; }
+.quadrants { display: grid; grid-template-columns: 28px 1fr 1fr; grid-template-rows: auto 1fr 1fr; gap: 12px; }
+.axe { color: var(--discret); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.axe-h { text-align: center; }
+.axe-v { display: flex; align-items: center; justify-content: center; }
+.axe-v span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+
+.zone {
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
+  padding: 12px; min-height: 180px; transition: border-color 0.15s, background 0.15s;
+}
+.zone[data-case="a_classer"] { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
+.zone[data-case="q1"] { border-top: 3px solid var(--violet); }
+.zone.survol { border-color: var(--violet); background: var(--violet-fond); }
+.zone-tete { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.zone-tete h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.zone-tete .num { color: var(--violet-clair); margin-right: 2px; }
+.zone-tete .aide { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--discret); }
+.compteur { margin-left: auto; font-size: 12px; color: var(--discret); background: var(--surface-2); border-radius: 999px; padding: 1px 9px; }
+.compteur.alerte { color: var(--fond); background: var(--alerte); font-weight: 600; }
+.cartes { display: flex; flex-direction: column; gap: 8px; }
+.zone-vide {
+  margin: 0; padding: 20px 8px; text-align: center; color: var(--discret); font-size: 13px;
+  border: 1px dashed var(--bordure); border-radius: 8px;
+}
+
+.carte {
+  background: var(--surface-2); border: 1px solid var(--bordure); border-radius: 8px;
+  padding: 9px 11px; cursor: grab; user-select: none;
+}
+.carte:hover { border-color: var(--violet); }
+.carte:active { cursor: grabbing; }
+.carte:focus-visible { outline: 2px solid var(--violet); outline-offset: 1px; }
+.carte.en-deplacement { opacity: 0.35; }
+.carte.fait .carte-titre { text-decoration: line-through; color: var(--discret); }
+.carte.fait, .carte.reporte, .carte.abandonne { opacity: 0.6; }
+.carte.reporte, .carte.abandonne { border-style: dashed; }
+.carte-haut { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.carte-cat { color: var(--discret); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.carte-haut .statut { margin-left: auto; font-size: 11px; padding: 0 7px; }
+/* × visible au survol de la carte (ou au clavier) */
+.carte-haut .suppr { margin-left: auto; font-size: 16px; opacity: 0; }
+.carte-haut .statut + .suppr { margin-left: 0; }
+.carte:hover .suppr, .carte:focus-within .suppr { opacity: 1; }
+.carte-titre { font-size: 14px; font-weight: 500; margin: 3px 0 5px; line-height: 1.35; }
+.carte-bas { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--discret); }
+.carte-bas .retard { color: var(--erreur); font-weight: 600; }
+.carte-bas .bloquee { color: var(--alerte); }
+
+@media (max-width: 900px) {
+  .matrice { grid-template-columns: 1fr; }
+  .zone[data-case="a_classer"] { position: static; max-height: none; }
+  .quadrants { grid-template-columns: 1fr; grid-template-rows: none; }
+  .axe { display: none; }
+  .barre .bouton { margin-left: 0; }
+}

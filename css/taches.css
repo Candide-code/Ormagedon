@@ -1,0 +1,15 @@
+/* Liste des tâches du tableau de bord + modification directe des textes */
+.bloc-large { margin-top: 16px; }
+.taches { list-style: none; margin: 0; padding: 0; }
+.taches li { padding: 14px 0; border-top: 1px solid var(--bordure); }
+.taches li:first-child { border-top: none; }
+.taches p { margin: 6px 0 0; font-size: 14px; }
+.taches p.note { color: var(--texte); border-left: 2px solid var(--violet); padding-left: 10px; }
+.tache-tete { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.tache-titre { font-weight: 500; }
+.tache-date { margin-left: auto; font-size: 13px; }
+
+.editable { border-radius: 4px; outline: none; cursor: text; transition: background 0.15s; }
+.editable:hover { background: var(--surface-2); }
+.editable:focus { background: var(--surface-2); box-shadow: 0 0 0 1px var(--violet); color: var(--texte); }
+.editable:empty::before { content: attr(data-vide); color: var(--discret); opacity: 0.6; font-style: italic; }

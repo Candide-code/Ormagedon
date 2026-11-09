@@ -1,0 +1,10 @@
+/* Bloc des jalons (tableau de bord) */
+.avancement {
+  display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 999px;
+  background: var(--violet-fond); color: var(--violet-clair); font-size: 12px; font-variant-numeric: tabular-nums;
+}
+.avancement.complet { background: none; color: var(--ok); border: 1px solid var(--ok); }
+.a-verifier {
+  color: var(--alerte); border: 1px solid var(--alerte); border-radius: 999px;
+  padding: 0 8px; font-size: 12px; margin-left: 6px;
+}

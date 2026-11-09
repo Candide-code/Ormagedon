@@ -1,0 +1,15 @@
+/* Boutons de catégories (filtre commun au tableau de bord et à la matrice) */
+.puces { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.sous-puces { padding-left: 14px; border-left: 2px solid var(--violet); margin-bottom: 14px; }
+.puce {
+  font: inherit; font-size: 13px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-2); color: var(--discret);
+  border: 1px solid var(--bordure); border-radius: 999px; padding: 4px 12px;
+}
+.puce:hover { color: var(--texte); border-color: var(--violet); }
+.puce.active { background: var(--violet); border-color: var(--violet); color: #fff; }
+.puce .lettre { font-weight: 700; color: var(--violet-clair); }
+.puce.active .lettre { color: #fff; }
+.puce .nb { font-size: 11px; opacity: 0.75; font-variant-numeric: tabular-nums; }
+.sous-puces .puce { font-size: 12px; padding: 3px 10px; }

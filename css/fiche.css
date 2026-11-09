@@ -1,0 +1,67 @@
+/* Fiche de tâche : panneau de droite */
+.voile {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 10;
+}
+.fiche {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%);
+  background: var(--surface); border-left: 1px solid var(--bordure);
+  padding: 20px 22px 28px; overflow-y: auto; z-index: 11;
+  transform: translateX(100%); transition: transform 0.2s ease; visibility: hidden;
+}
+#fiche-contenu { min-height: 100%; display: flex; flex-direction: column; }
+body.fiche-ouverte .voile { opacity: 1; pointer-events: auto; }
+body.fiche-ouverte .fiche { transform: none; visibility: visible; }
+
+.fiche-tete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.fiche-tete .code { font-size: 15px; }
+.fermer { background: none; border: none; color: var(--discret); font-size: 26px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.fermer:hover { color: var(--texte); }
+.fiche textarea.fiche-titre {
+  font-size: 18px; font-weight: 600; background: none; border-color: transparent;
+  padding: 4px 6px; margin-bottom: 6px; resize: none;
+}
+.fiche textarea.fiche-titre:hover, .fiche textarea.fiche-titre:focus { border-color: var(--bordure); background: var(--surface-2); }
+.fiche-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 4px; }
+.champ { display: flex; flex-direction: column; gap: 4px; }
+.champ > span, .fiche-section h4 {
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--discret);
+}
+.fiche-section { margin-top: 18px; }
+.fiche-section h4 { margin: 0 0 8px; }
+
+.todo { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.todo li { display: flex; align-items: center; gap: 8px; }
+.todo input[type="checkbox"] { accent-color: var(--violet); width: 16px; height: 16px; flex: none; }
+.todo .todo-texte { background: none; border-color: transparent; padding: 4px 6px; }
+.todo .todo-texte:hover, .todo .todo-texte:focus { background: var(--surface-2); border-color: var(--bordure); }
+.todo li.fait .todo-texte { text-decoration: line-through; color: var(--discret); }
+
+.jalons-choix { display: flex; flex-direction: column; gap: 6px; }
+.deps { list-style: none; margin: 8px 0 0; padding: 0; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.deps .statut { margin-left: 6px; }
+/* Liens */
+.liens { list-style: none; margin: 0 0 10px; padding: 0; font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
+.fl-ligne { display: flex; align-items: center; gap: 8px; }
+.fl-icone { flex: none; width: 16px; height: 16px; color: var(--discret); }
+.fl-icone svg, .fl-btn svg { width: 16px; height: 16px; display: block; }
+.fl-nom {
+  flex: 1; min-width: 0; text-align: left; background: none; border: none; padding: 0; font: inherit;
+  color: var(--violet-clair); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.fl-nom:hover { color: var(--texte); }
+.fl-renommer { flex: 1; padding: 3px 6px !important; }
+.fl-actions { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+.fl-btn { background: none; border: none; color: var(--discret); cursor: pointer; padding: 2px 4px; border-radius: 4px; font-size: 14px; line-height: 1; }
+.fl-btn:hover { color: var(--violet-clair); }
+.fl-site { font-size: 12px; color: var(--discret); margin-left: 24px; overflow-wrap: anywhere; }
+.fl-vide { margin: 0 0 10px; font-size: 14px; }
+.fl-form { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.fl-form-boutons, .fl-ajout { display: flex; gap: 8px; flex-wrap: wrap; }
+.fiche-pied { margin-top: auto; padding-top: 24px; }
+
+@media (max-width: 900px) {
+  .fiche-grille { grid-template-columns: 1fr; }
+}
+.fl-invalide { color: var(--discret); text-decoration: line-through; cursor: default; }
