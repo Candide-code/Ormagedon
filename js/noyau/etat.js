@@ -32,3 +32,13 @@ try { Object.assign(etat.filtre, JSON.parse(localStorage.getItem('ormagedon-filt
 export function memoriserFiltre() {
   try { localStorage.setItem('ormagedon-filtre', JSON.stringify(etat.filtre)); } catch { /* sans importance */ }
 }
+
+// Changement de projet : recherche, filtre de catégorie et dates du calendrier
+// propres à l'ancien projet sont remis à zéro
+export function repartirDeZero() {
+  etat.filtre.texte = '';
+  etat.filtre.categorie = '';
+  memoriserFiltre();
+  etat.jourCalendrier = null;
+  etat.semaineZoom = null;
+}

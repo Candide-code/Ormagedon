@@ -98,6 +98,8 @@ main { flex: 1; padding: 28px 32px; width: 100%; } /* toute la largeur, dans tou
   background: var(--surface-2); color: var(--texte); padding: 7px 14px;
 }
 .bouton:hover { border-color: var(--violet); }
+a.bouton { display: inline-block; text-decoration: none; } /* lien qui a l'air d'un bouton */
+.bouton:disabled { opacity: 0.6; cursor: default; }
 .bouton.violet { background: var(--violet); border-color: var(--violet); color: #fff; }
 .bouton.violet:hover { background: var(--violet-clair); }
 .bouton.danger { color: var(--erreur); background: none; }

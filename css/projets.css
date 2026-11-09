@@ -13,3 +13,24 @@
 }
 .carte-projet:hover { border-color: var(--violet); }
 .carte-projet-nom { font-size: 16px; font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
+
+/* Formulaire « Nouveau projet » */
+.form-projet {
+  max-width: 560px; display: flex; flex-direction: column; gap: 20px;
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 22px 24px;
+}
+.np-titre { margin: 0; font-size: 18px; font-weight: 600; }
+.np-champ { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.np-champ > span:first-child, .np-champ legend { font-weight: 500; }
+.np-champ input[type="date"] { max-width: 220px; }
+.np-champ input[aria-invalid="true"] { border-color: var(--erreur); }
+.np-erreur { color: var(--erreur); font-size: 13px; }
+.np-categories { border: none; margin: 0; padding: 0; min-width: 0; }
+.np-categories legend { padding: 0; margin-bottom: 2px; }
+.np-aide { margin: 0 0 4px; font-size: 13px; }
+.np-categorie { display: flex; align-items: center; gap: 6px; }
+.np-categories [data-ajouter-cat] { align-self: flex-start; margin-top: 2px; }
+.np-actions { display: flex; justify-content: flex-end; gap: 10px; }
+@media (max-width: 640px) {
+  .form-projet { padding: 18px 16px; }
+}

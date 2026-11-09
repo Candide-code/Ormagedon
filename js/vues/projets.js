@@ -1,6 +1,7 @@
-// Vue « Mes projets » : une carte par projet, clic = ouvre son tableau de bord.
+// Vue « Mes projets » : une carte par projet, clic = ouvre son tableau de bord ;
+// bouton « + Nouveau projet » vers le formulaire (vues/nouveau-projet.js).
 // On y revient en cliquant sur le logo (lien #projets dans l'en-tête).
-import { etat, $, hooks, memoriserFiltre } from '../noyau/etat.js';
+import { etat, $, hooks, repartirDeZero } from '../noyau/etat.js';
 import { echapper, dateFr, joursAvant, texteModifieLe } from '../noyau/outils.js';
 import { listerProjets, ouvrirProjet } from '../noyau/stockage.js';
 
@@ -29,6 +30,7 @@ export function afficherProjets() {
   $('contenu').innerHTML = `
     <div class="liste-tete projets-tete">
       <h2>Mes projets · ${projets.length}</h2>
+      <a class="bouton violet" href="#nouveau">+ Nouveau projet</a>
     </div>
     <div class="grille-projets">${projets.map(carteProjet).join('')}</div>`;
 }
@@ -38,15 +40,9 @@ $('contenu').addEventListener('click', async (e) => {
   const c = e.target.closest('[data-projet]');
   if (!c) return;
   const id = c.dataset.projet;
-  const autre = id !== etat.donnees.id;
+  const autre = !etat.donnees || id !== etat.donnees.id;
   if (!(await ouvrirProjet(id))) return;
-  if (autre) {
-    // Filtres et dates propres à l'ancien projet : on repart de zéro
-    etat.filtre.categorie = '';
-    memoriserFiltre();
-    etat.jourCalendrier = null;
-    etat.semaineZoom = null;
-  }
+  if (autre) repartirDeZero();
   location.hash = 'accueil'; // le changement d'adresse redessine la page
 });
 

@@ -92,24 +92,50 @@ function lireProjet(id) {
   return completerDonnees(d);
 }
 
-// Projet vide créé au premier lancement.
-// Provisoire : la page « Mes projets » (étape 1.4) le remplacera.
-function projetVide() {
+// Clé unique d'un nouveau projet : heure de création + 4 caractères au hasard,
+// vérifiée contre les projets déjà enregistrés. Deux projets peuvent avoir le même nom.
+function nouvelId() {
+  const pris = new Set((lire(CLE_LISTE) || []).map((p) => p.id));
+  let id;
+  do {
+    id = 'p-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+  } while (pris.has(id) || lire(cleProjet(id)) !== null);
+  return id;
+}
+
+// Crée un projet vide (formulaire « Nouveau projet »), l'enregistre et l'ouvre.
+// categories : liste de noms déjà nettoyée (sans vide ni doublon).
+export async function creerProjet({ nom, deadline, categories }) {
+  await file; // les enregistrements en cours finissent d'abord dans l'ancien projet
   const maintenant = new Date().toISOString();
-  return {
+  const d = {
     schema: SCHEMA,
-    id: 'p-' + Date.now(),
-    projet: { nom: 'Mon projet', deadline: null, creeLe: maintenant },
-    categories: [],
+    id: nouvelId(),
+    projet: { nom, deadline: deadline || null, creeLe: maintenant },
+    categories: categories.map((c) => ({ nom: c, sous: [] })),
     statuts: [...STATUTS],
     jalons: [],
     taches: [],
     modifieLe: maintenant,
   };
+  try {
+    ecrire(cleProjet(d.id), d);
+    mettreAJourListe(d);
+    ecrire(CLE_DERNIER, d.id);
+  } catch {
+    marquerEnregistrement(false);
+    toast("Projet non créé : le stockage de l'appareil est plein ou bloqué");
+    return false;
+  }
+  etat.donnees = d;
+  aRecharger = false;
+  marquerEnregistrement(true);
+  return true;
 }
 
-// Ouvre le projet ouvert en dernier, sinon le premier de la liste,
-// sinon crée un projet vide.
+// Ouvre le projet ouvert en dernier, sinon le premier de la liste.
+// Aucun projet (premier lancement) : etat.donnees reste vide et main.js
+// affiche le formulaire « Nouveau projet ».
 export async function charger() {
   const liste = lire(CLE_LISTE) || [];
   const ids = [lire(CLE_DERNIER), ...liste.map((p) => p.id)].filter(Boolean);
@@ -118,17 +144,19 @@ export async function charger() {
     donnees = lireProjet(id);
     if (donnees) break;
   }
-  const nouveau = !donnees;
-  if (nouveau) donnees = projetVide();
   etat.donnees = donnees;
   let ok = true;
   try {
-    ecrire(CLE_DERNIER, donnees.id);
-    if (nouveau) ecrire(cleProjet(donnees.id), donnees);
-    mettreAJourListe(donnees);
+    if (donnees) {
+      ecrire(CLE_DERNIER, donnees.id);
+      mettreAJourListe(donnees);
+    } else {
+      localStorage.setItem('ormagedon-essai', '1'); // le stockage marche-t-il ?
+      localStorage.removeItem('ormagedon-essai');
+    }
   } catch { ok = false; /* stockage indisponible : l'app s'ouvre quand même */ }
   hooks.toutAfficher();
-  if (donnees.tropRecent) marquerEnregistrement(false, 'version');
+  if (donnees && donnees.tropRecent) marquerEnregistrement(false, 'version');
   else marquerEnregistrement(ok);
 }
 
@@ -262,6 +290,7 @@ export function marquerEnregistrement(ok, raison = 'stockage') {
     : raison === 'version'
       ? "Non enregistré : version plus récente de l'app"
       : 'Non enregistré : stockage plein ou bloqué';
-  // Sur « Mes projets », aucun projet n'est affiché : pas de date
-  $('maj').textContent = location.hash === '#projets' ? '' : texteModifieLe(etat.donnees && etat.donnees.modifieLe);
+  // Sur « Mes projets » et « Nouveau projet », aucun projet n'est affiché : pas de date
+  const horsProjet = ['#projets', '#nouveau'].includes(location.hash);
+  $('maj').textContent = horsProjet ? '' : texteModifieLe(etat.donnees && etat.donnees.modifieLe);
 }
