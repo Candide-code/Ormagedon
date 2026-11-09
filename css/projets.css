@@ -5,13 +5,25 @@
   letter-spacing: 0.06em; color: var(--discret);
 }
 .grille-projets { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+/* Carte : la grande zone ouvre le projet, la ligne du bas porte Dupliquer / Supprimer */
 .carte-projet {
-  display: flex; flex-direction: column; gap: 2px; text-align: left;
-  font: inherit; font-size: 14px; color: var(--texte); cursor: pointer;
+  display: flex; flex-direction: column;
   background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
-  padding: 16px 18px;
 }
 .carte-projet:hover { border-color: var(--violet); }
+.carte-projet-ouvrir {
+  flex: 1; display: flex; flex-direction: column; gap: 2px; text-align: left;
+  font: inherit; font-size: 14px; color: var(--texte); cursor: pointer;
+  background: none; border: none; border-radius: var(--rayon) var(--rayon) 0 0; padding: 16px 18px 12px;
+}
+.carte-projet-ouvrir:focus-visible { outline-offset: -2px; }
+.carte-projet-actions { display: flex; gap: 4px; padding: 6px 10px; border-top: 1px solid var(--bordure); }
+.action-projet {
+  background: none; border: none; font: inherit; font-size: 13px; color: var(--discret);
+  padding: 4px 8px; border-radius: 6px; cursor: pointer;
+}
+.action-projet:hover { color: var(--texte); background: var(--surface-2); }
+.action-projet.danger:hover { color: var(--erreur); }
 .carte-projet-nom { font-size: 16px; font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
 
 /* Formulaire « Nouveau projet » */

@@ -7,8 +7,24 @@ import { creerProjet, listerProjets } from '../noyau/stockage.js';
 
 // Ce qui est déjà saisi : gardé si la page se redessine (ex. un autre onglet enregistre)
 // ou si on part et revient. Vidé après « Commencer » ou « Annuler ».
+// Pour « Dupliquer » : source = id du projet copié (ses catégories, jalons et tâches
+// sont repris tels quels), remettre = tâches remises à « À faire ».
 let brouillon = null;
-const brouillonVide = () => ({ nom: '', deadline: '', categories: [''], erreur: false });
+const brouillonVide = () => ({ nom: '', deadline: '', categories: [''], erreur: false, source: null, sourceNom: '', remettre: true });
+
+// Bouton « + Nouveau projet » : formulaire vide (un brouillon de nouveau projet est gardé)
+export function preparerNouveau() {
+  if (brouillon && brouillon.source) brouillon = null;
+}
+
+// Bouton « Dupliquer » d'une carte : formulaire prérempli avec le nom et la deadline
+export function preparerCopie(id) {
+  const p = listerProjets().find((x) => x.id === id);
+  if (!p) return false;
+  const nom = p.nom.trim() || 'Projet sans nom';
+  brouillon = { ...brouillonVide(), nom: `${nom} (copie)`, deadline: p.deadline || '', source: id, sourceNom: nom };
+  return true;
+}
 
 function ligneCategorie(nom, i) {
   return `
@@ -23,9 +39,22 @@ export function afficherNouveauProjet() {
   if (!brouillon) brouillon = brouillonVide();
   const b = brouillon;
   const premier = listerProjets().length === 0;
+  const titre = b.source ? `Dupliquer « ${echapper(b.sourceNom)} »` : premier ? 'Ton premier projet' : 'Nouveau projet';
+  const categories = b.source ? `
+      <div class="np-champ">
+        <span>Contenu copié</span>
+        <p class="discret np-aide">Les catégories, les jalons et les tâches de « ${echapper(b.sourceNom)} » sont copiés. Le projet d'origine ne change pas.</p>
+        <label class="case-cocher"><input type="checkbox" data-champ="remettre" ${b.remettre ? 'checked' : ''}> Remettre toutes les tâches à « À faire » et décocher leurs étapes</label>
+      </div>` : `
+      <fieldset class="np-champ np-categories">
+        <legend>Catégories <span class="discret">(facultatif)</span></legend>
+        <p class="discret np-aide">Tu pourras en ajouter ou en changer plus tard.</p>
+        ${b.categories.map(ligneCategorie).join('')}
+        <button type="button" class="bouton" data-ajouter-cat>+ Ajouter une catégorie</button>
+      </fieldset>`;
   $('contenu').innerHTML = `
     <form class="form-projet" novalidate>
-      <h2 class="np-titre">${premier ? 'Ton premier projet' : 'Nouveau projet'}</h2>
+      <h2 class="np-titre">${titre}</h2>
 
       <label class="np-champ">
         <span>Nom du projet *</span>
@@ -39,12 +68,7 @@ export function afficherNouveauProjet() {
         <input type="date" data-champ="deadline" value="${echapper(b.deadline)}">
       </label>
 
-      <fieldset class="np-champ np-categories">
-        <legend>Catégories <span class="discret">(facultatif)</span></legend>
-        <p class="discret np-aide">Tu pourras en ajouter ou en changer plus tard.</p>
-        ${b.categories.map(ligneCategorie).join('')}
-        <button type="button" class="bouton" data-ajouter-cat>+ Ajouter une catégorie</button>
-      </fieldset>
+      ${categories}
 
       <div class="np-actions">
         ${premier ? '' : '<button type="button" class="bouton" data-annuler>Annuler</button>'}
@@ -78,6 +102,7 @@ $('contenu').addEventListener('input', (e) => {
     }
   }
   if (t.dataset.champ === 'deadline') brouillon.deadline = t.value;
+  if (t.dataset.champ === 'remettre') brouillon.remettre = t.checked;
   if (t.dataset.cat !== undefined) brouillon.categories[+t.dataset.cat] = t.value;
 });
 
@@ -130,7 +155,8 @@ $('contenu').addEventListener('submit', async (e) => {
   });
   const bouton = e.target.querySelector('[type="submit"]');
   bouton.disabled = true; // pas de double clic
-  if (!(await creerProjet({ nom, deadline: brouillon.deadline, categories }))) {
+  const { deadline, source, remettre } = brouillon;
+  if (!(await creerProjet({ nom, deadline, categories, source, remettre }))) {
     bouton.disabled = false;
     return;
   }

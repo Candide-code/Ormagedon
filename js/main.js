@@ -5,7 +5,7 @@
 //   vues/       mes projets, nouveau projet, tableau de bord, matrice, calendrier
 import { etat, $, hooks } from './noyau/etat.js';
 import { dateFr, joursAvant, tacheParId, texteModifieLe } from './noyau/outils.js';
-import { charger } from './noyau/stockage.js';
+import { charger, listerProjets } from './noyau/stockage.js';
 import { afficherFiche, fermerFiche } from './composants/fiche.js';
 import { afficherProjets } from './vues/projets.js';
 import { afficherNouveauProjet } from './vues/nouveau-projet.js';
@@ -55,10 +55,11 @@ function afficherEnteteHorsProjet(vue) {
 
 function afficher() {
   let vue = vueActive();
-  // Aucun projet (premier lancement) : seul le formulaire « Nouveau projet » a du sens
+  // Aucun projet ouvert : « Mes projets » s'il en existe (ex. le projet ouvert vient
+  // d'être supprimé), sinon le formulaire « Nouveau projet » (premier lancement)
   if (!etat.donnees && !HORS_PROJET.includes(vue)) {
-    history.replaceState(null, '', '#nouveau');
-    vue = 'nouveau';
+    vue = listerProjets().length ? 'projets' : 'nouveau';
+    history.replaceState(null, '', '#' + vue);
   }
   const horsProjet = HORS_PROJET.includes(vue);
   document.body.classList.toggle('page-projets', horsProjet); // cache les onglets
@@ -80,7 +81,7 @@ function afficher() {
 function toutAfficher() {
   afficher();
   if (etat.ficheId) {
-    if (tacheParId(etat.ficheId)) afficherFiche(); else fermerFiche();
+    if (etat.donnees && tacheParId(etat.ficheId)) afficherFiche(); else fermerFiche();
   }
 }
 

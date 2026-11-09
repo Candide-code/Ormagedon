@@ -103,9 +103,12 @@ function nouvelId() {
   return id;
 }
 
-// Crée un projet vide (formulaire « Nouveau projet »), l'enregistre et l'ouvre.
+// Crée un projet (formulaire « Nouveau projet »), l'enregistre et l'ouvre.
 // categories : liste de noms déjà nettoyée (sans vide ni doublon).
-export async function creerProjet({ nom, deadline, categories }) {
+// source : id d'un projet à dupliquer. On copie alors ses catégories, jalons et tâches
+// (categories est ignoré) ; avec remettre, les tâches repartent à « À faire »
+// et leurs étapes sont décochées.
+export async function creerProjet({ nom, deadline, categories, source = null, remettre = false }) {
   await file; // les enregistrements en cours finissent d'abord dans l'ancien projet
   const maintenant = new Date().toISOString();
   const d = {
@@ -118,6 +121,21 @@ export async function creerProjet({ nom, deadline, categories }) {
     taches: [],
     modifieLe: maintenant,
   };
+  if (source) {
+    const s = lireProjet(source);
+    if (!s) { toast('Projet à copier introuvable'); return false; }
+    const copie = JSON.parse(JSON.stringify(s)); // copie complète, sans lien avec l'original
+    d.categories = copie.categories;
+    d.statuts = copie.statuts;
+    d.jalons = copie.jalons;
+    d.taches = copie.taches;
+    if (remettre) {
+      d.taches.forEach((t) => {
+        t.statut = 'À faire';
+        t.todo.forEach((x) => { x.fait = false; });
+      });
+    }
+  }
   try {
     ecrire(cleProjet(d.id), d);
     mettreAJourListe(d);
@@ -196,6 +214,50 @@ export async function ouvrirProjet(id) {
   return true;
 }
 
+// Supprime un projet de l'appareil. Renvoie ses données (pour « Annuler »), ou null.
+// Si c'était le projet ouvert, plus aucun projet n'est ouvert.
+export async function supprimerProjet(id) {
+  await file;
+  const d = lire(cleProjet(id));
+  if (!d) return null;
+  try {
+    localStorage.removeItem(cleProjet(id));
+    ecrire(CLE_LISTE, (lire(CLE_LISTE) || []).filter((p) => p.id !== id));
+    if (lire(CLE_DERNIER) === id) localStorage.removeItem(CLE_DERNIER);
+  } catch {
+    toast("Projet non supprimé : le stockage de l'appareil est bloqué");
+    return null;
+  }
+  if (etat.donnees && etat.donnees.id === id) { etat.donnees = null; aRecharger = false; }
+  return d;
+}
+
+// « Annuler » après une suppression : remet le projet tel qu'il était
+export function restaurerProjet(d) {
+  if (lire(cleProjet(d.id))) return false; // déjà là
+  try {
+    ecrire(cleProjet(d.id), d);
+    mettreAJourListe(d);
+    return true;
+  } catch {
+    toast("Impossible d'annuler : le stockage de l'appareil est plein ou bloqué");
+    return false;
+  }
+}
+
+// Le stockage répond-il ? (bloqué : on ne peut pas savoir si un projet existe)
+function stockageLisible() {
+  try { localStorage.getItem(CLE_LISTE); return true; } catch { return false; }
+}
+
+// Le projet ouvert a été supprimé dans un autre onglet : on le ferme, sans le recréer
+function projetSupprimeAilleurs() {
+  aRecharger = false;
+  etat.donnees = null;
+  hooks.toutAfficher(); // main.js renvoie vers « Mes projets »
+  toast('Ce projet a été supprimé dans un autre onglet');
+}
+
 // Met à jour la fiche du projet dans la liste des projets
 function mettreAJourListe(d) {
   const liste = (lire(CLE_LISTE) || []).filter((p) => p.id !== d.id);
@@ -216,6 +278,7 @@ export function enregistrer() {
 
 async function ecrireProjet() {
   const d = etat.donnees;
+  if (!d) return false;
   // Projet venu d'une version plus récente de l'app : on ne l'abîme pas
   if (d.tropRecent) {
     marquerEnregistrement(false, 'version');
@@ -225,6 +288,8 @@ async function ecrireProjet() {
   // Un autre onglet a enregistré depuis notre dernière lecture : on n'écrase pas
   // sa version, on la recharge (comme Trudy en cas de conflit).
   const stocke = lire(cleProjet(d.id));
+  // Supprimé dans un autre onglet : on ne le recrée pas
+  if (!stocke && stockageLisible()) { projetSupprimeAilleurs(); return false; }
   if (stocke && stocke.modifieLe && stocke.modifieLe !== d.modifieLe) {
     aRecharger = false;
     etat.donnees = lireProjet(d.id);
@@ -258,11 +323,11 @@ function occupe() {
 }
 
 function rechargerDepuisAutreOnglet() {
-  if (!aRecharger) return;
+  if (!aRecharger || !etat.donnees) return;
   if (occupe()) { setTimeout(rechargerDepuisAutreOnglet, 500); return; }
   aRecharger = false;
   const donnees = lireProjet(etat.donnees.id);
-  if (!donnees) return; // projet supprimé ailleurs : géré avec « Mes projets » (étape 1.4)
+  if (!donnees) { projetSupprimeAilleurs(); return; }
   etat.donnees = donnees;
   hooks.toutAfficher();
   if (donnees.tropRecent) { marquerEnregistrement(false, 'version'); return; }
