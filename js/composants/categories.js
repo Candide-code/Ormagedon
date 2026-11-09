@@ -36,7 +36,7 @@ export function boutonsCategories() {
     ...categories.map((c) => {
       const active = cat === c;
       // Re-cliquer sur la catégorie active retire le filtre
-      return puce(active && !sous ? '' : c.nom, `<span class="lettre">${echapper(c.code)}</span>${echapper(c.nom)}`,
+      return puce(active && !sous ? '' : c.nom, echapper(c.nom),
         taches.filter((t) => t.categorie === c.nom).length, active);
     }),
     // « Sans catégorie » : seulement si le projet a des catégories et des tâches sans catégorie

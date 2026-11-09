@@ -9,6 +9,15 @@ export function joursAvant(dateIso) {
 
 export const dateFr = (iso) => { const [, m, j] = iso.split('-'); return `${j}/${m}`; };
 
+// Catégorie affichée à côté du code d'une tâche : « T1 · Marketing › Pub ».
+// Renvoie le morceau « · Marketing › Pub » en HTML (rien si la tâche est sans catégorie).
+// avecSous = false là où la place manque (cartes, dépendances, calendrier).
+export function htmlCategorie(t, avecSous = true, classe = 'code-cat') {
+  if (!t.categorie) return '';
+  const texte = ' · ' + t.categorie + (avecSous && t.sousCategorie ? ' › ' + t.sousCategorie : '');
+  return `<span class="${classe}">${echapper(texte)}</span>`;
+}
+
 // Pied de page : « Modifié le 09/11 à 13:35 » (heure locale), rien si pas de date
 export function texteModifieLe(isoComplet) {
   const d = isoComplet ? new Date(isoComplet) : null;

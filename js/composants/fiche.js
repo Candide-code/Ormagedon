@@ -1,6 +1,6 @@
 // Fiche de tâche : panneau de droite pour tout modifier
 import { etat, $, hooks, CASES } from '../noyau/etat.js';
-import { echapper, dateFr, classeStatut, tacheParId, categorieDe, toast } from '../noyau/outils.js';
+import { echapper, dateFr, classeStatut, tacheParId, categorieDe, toast, htmlCategorie } from '../noyau/outils.js';
 import { enregistrer } from '../noyau/stockage.js';
 import { jalonsTries } from './jalons.js';
 import { supprimerTache } from './suppression.js';
@@ -32,13 +32,13 @@ export function afficherFiche() {
   const deps = (t.dependances || []).map((id) => {
     const x = tacheParId(id);
     return x
-      ? `<li><button class="code lien" data-ouvrir="${echapper(x.id)}">${echapper(x.id)}</button> ${echapper(x.titre)} <span class="statut ${classeStatut(x.statut)}">${echapper(x.statut)}</span></li>`
+      ? `<li><button class="code lien" data-ouvrir="${echapper(x.id)}">${echapper(x.id)}</button>${htmlCategorie(x, false)} ${echapper(x.titre)} <span class="statut ${classeStatut(x.statut)}">${echapper(x.statut)}</span></li>`
       : `<li class="discret">${echapper(id)} (introuvable)</li>`;
   }).join('');
 
   $('fiche-contenu').innerHTML = `
     <div class="fiche-tete">
-      <span class="code">${echapper(t.id)}</span>
+      <span><span class="code">${echapper(t.id)}</span>${htmlCategorie(t)}</span>
       <button class="fermer" id="fiche-fermer" aria-label="Fermer la fiche">×</button>
     </div>
     <textarea class="fiche-titre" data-champ="titre" rows="2" aria-label="Titre">${echapper(t.titre)}</textarea>
@@ -75,7 +75,7 @@ export function afficherFiche() {
 
     <section class="fiche-section">
       <h4>Dépend de</h4>
-      <input type="text" data-champ="dependances" value="${echapper((t.dependances || []).join(', '))}" placeholder="Codes séparés par des virgules (ex. C1, C2)">
+      <input type="text" data-champ="dependances" value="${echapper((t.dependances || []).join(', '))}" placeholder="Codes séparés par des virgules (ex. T1, T2)">
       ${deps ? `<ul class="deps">${deps}</ul>` : ''}
     </section>
 

@@ -2,7 +2,7 @@
 // Clic sur un titre ou une description : on modifie, puis on clique ailleurs
 // (ou Entrée pour un titre, Échap pour annuler) et c'est enregistré.
 import { $ } from '../noyau/etat.js';
-import { echapper, dateFr, classeStatut, tacheParId, toast } from '../noyau/outils.js';
+import { echapper, dateFr, classeStatut, tacheParId, toast, htmlCategorie } from '../noyau/outils.js';
 import { enregistrer } from '../noyau/stockage.js';
 import { boutonSupprimer } from './suppression.js';
 
@@ -13,9 +13,8 @@ export function listeTaches(taches) {
       ${taches.map((t) => `
         <li>
           <div class="tache-tete">
-            <button class="code lien" data-ouvrir="${echapper(t.id)}" title="Ouvrir la fiche">${echapper(t.id)}</button>
+            <span class="nowrap"><button class="code lien" data-ouvrir="${echapper(t.id)}" title="Ouvrir la fiche">${echapper(t.id)}</button>${htmlCategorie(t)}</span>
             <span class="tache-titre editable" contenteditable="true" spellcheck="true" data-id="${echapper(t.id)}" data-champ="titre" title="Clique pour modifier">${echapper(t.titre)}</span>
-            <span class="etiquette">${echapper(t.categorie)}${t.sousCategorie ? ' › ' + echapper(t.sousCategorie) : ''}</span>
             <span class="statut ${classeStatut(t.statut)}">${echapper(t.statut)}</span>
             <span class="discret nowrap tache-date">${t.echeance ? 'avant le ' + dateFr(t.echeance) : ''}</span>
             ${boutonSupprimer(echapper(t.id))}

@@ -4,7 +4,7 @@
 //   - Zoom : clic sur « Sem. du JJ/MM » → les 7 jours de cette semaine en grand.
 // Clic sur une date → ses tâches dans la colonne de droite ; clic sur un code → fiche.
 import { etat, $, hooks } from '../noyau/etat.js';
-import { echapper, dateFr, classeStatut, parEcheance } from '../noyau/outils.js';
+import { echapper, dateFr, classeStatut, parEcheance, htmlCategorie } from '../noyau/outils.js';
 import { boutonsCategories, filtreCategorie } from '../composants/categories.js';
 import { jalonsTries } from '../composants/jalons.js';
 
@@ -76,9 +76,8 @@ function colonneDroite(j, { taches = [], jalons = [] }) {
       <ul class="cal-taches">
         ${taches.map((t) => `
           <li>
-            <div><button class="code lien" data-ouvrir="${echapper(t.id)}" title="Ouvrir la fiche">${echapper(t.id)}</button> ${echapper(t.titre)}</div>
+            <div><button class="code lien" data-ouvrir="${echapper(t.id)}" title="Ouvrir la fiche">${echapper(t.id)}</button>${htmlCategorie(t, false)} ${echapper(t.titre)}</div>
             <div class="cal-meta">
-              <span class="etiquette">${echapper(t.categorie)}</span>
               <span class="statut ${classeStatut(t.statut)}">${echapper(t.statut)}</span>
             </div>
           </li>`).join('')}

@@ -69,11 +69,12 @@ main { flex: 1; padding: 28px 32px; width: 100%; } /* toute la largeur, dans tou
 
 /* Petits éléments partagés */
 .code { font-weight: 600; color: var(--violet-clair); font-variant-numeric: tabular-nums; }
+/* « · Marketing › Pub » à côté du code d'une tâche */
+.code-cat { color: var(--discret); font-weight: 400; white-space: nowrap; }
 .code.lien {
   background: none; border: none; font: inherit; font-weight: 600; color: var(--violet-clair);
   cursor: pointer; padding: 0; text-decoration: underline dotted; text-underline-offset: 3px;
 }
-.etiquette { background: var(--violet-fond); color: var(--violet-clair); border-radius: 999px; padding: 2px 10px; font-size: 13px; }
 .statut { font-size: 12px; color: var(--discret); border: 1px solid var(--bordure); border-radius: 999px; padding: 1px 9px; }
 .statut.fait { color: var(--ok); border-color: var(--ok); }
 .statut.en-cours { color: var(--violet-clair); border-color: var(--violet); }

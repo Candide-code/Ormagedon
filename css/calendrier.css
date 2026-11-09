@@ -74,7 +74,6 @@ button.jour:focus-visible { outline: 2px solid var(--violet); outline-offset: -2
 .cal-taches li { padding: 10px 0; border-top: 1px solid var(--bordure); font-size: 14px; }
 .cal-taches li:first-child { border-top: none; padding-top: 0; }
 .cal-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.cal-meta .etiquette { font-size: 12px; }
 
 @media (max-width: 900px) {
   .cal { grid-template-columns: 1fr; }

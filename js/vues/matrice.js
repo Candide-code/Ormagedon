@@ -1,6 +1,6 @@
 // Vue « Matrice » : colonne À classer + 4 cases, glisser-déposer des cartes
 import { etat, $, hooks, CASES, LIMITE_CASE_1, TERMINES, memoriserFiltre } from '../noyau/etat.js';
-import { echapper, dateFr, joursAvant, classeStatut, bloquantes, tacheParId, parEcheance, toast } from '../noyau/outils.js';
+import { echapper, dateFr, joursAvant, classeStatut, bloquantes, tacheParId, parEcheance, toast, htmlCategorie } from '../noyau/outils.js';
 import { enregistrer } from '../noyau/stockage.js';
 import { boutonsCategories, filtreActif, filtreCategorie } from '../composants/categories.js';
 import { ouvrirFiche } from '../composants/fiche.js';
@@ -25,8 +25,7 @@ function carte(t) {
   return `
     <article class="carte ${classeStatut(t.statut)}" draggable="true" data-id="${echapper(t.id)}" tabindex="0" title="Glisse la carte pour la classer · clique pour ouvrir la fiche">
       <div class="carte-haut">
-        <span class="code">${echapper(t.id)}</span>
-        <span class="carte-cat">${echapper(t.sousCategorie || t.categorie)}</span>
+        <span class="code">${echapper(t.id)}</span>${htmlCategorie(t, false, 'carte-cat')}
         ${t.statut !== 'À faire' ? `<span class="statut ${classeStatut(t.statut)}">${echapper(t.statut)}</span>` : ''}
         ${boutonSupprimer(echapper(t.id))}
       </div>

@@ -9,7 +9,5 @@
 }
 .puce:hover { color: var(--texte); border-color: var(--violet); }
 .puce.active { background: var(--violet); border-color: var(--violet); color: #fff; }
-.puce .lettre { font-weight: 700; color: var(--violet-clair); }
-.puce.active .lettre { color: #fff; }
 .puce .nb { font-size: 11px; opacity: 0.75; font-variant-numeric: tabular-nums; }
 .sous-puces .puce { font-size: 12px; padding: 3px 10px; }
