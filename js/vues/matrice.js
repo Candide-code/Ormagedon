@@ -2,8 +2,9 @@
 import { etat, $, hooks, CASES, LIMITE_CASE_1, TERMINES, memoriserFiltre } from '../noyau/etat.js';
 import { echapper, dateFr, joursAvant, classeStatut, bloquantes, tacheParId, parEcheance, toast, htmlCategorie } from '../noyau/outils.js';
 import { enregistrer } from '../noyau/stockage.js';
-import { boutonsCategories, filtreActif, filtreCategorie } from '../composants/categories.js';
+import { boutonsCategories, filtreCategorie } from '../composants/categories.js';
 import { ouvrirFiche } from '../composants/fiche.js';
+import { boutonNouvelleTache } from '../composants/nouvelle-tache.js';
 import { boutonSupprimer } from '../composants/suppression.js';
 
 function tachesFiltrees() {
@@ -71,7 +72,7 @@ export function afficherMatrice() {
     <div class="barre">
       <input type="search" id="f-texte" placeholder="Rechercher une tâche…" value="${echapper(f.texte)}" aria-label="Rechercher">
       <label class="case-cocher"><input type="checkbox" id="f-terminees" ${f.masquerTerminees ? 'checked' : ''}> Masquer les tâches faites, reportées ou abandonnées</label>
-      <button class="bouton violet" id="nouvelle">+ Nouvelle tâche</button>
+      ${boutonNouvelleTache()}
     </div>
     ${boutonsCategories()}
     <div class="matrice">
@@ -92,27 +93,6 @@ export function afficherMatrice() {
     champ.focus();
     champ.setSelectionRange(champ.value.length, champ.value.length);
     etat.focusRecherche = false;
-  }
-}
-
-// Nouvelle tâche : code = T + numéro suivant (T1, T2…), quelle que soit la catégorie.
-// Avec un filtre de catégorie actif, elle prend cette catégorie (et sous-catégorie) ;
-// sans filtre (« Toutes ») ou avec « Sans catégorie », elle est sans catégorie.
-async function nouvelleTache() {
-  const d = etat.donnees;
-  const { cat, sous } = filtreActif();
-  const nums = d.taches.map((t) => /^T(\d+)$/.exec(t.id)).filter(Boolean).map((m) => +m[1]);
-  const id = 'T' + (Math.max(0, ...nums) + 1);
-  d.taches.push({
-    id, titre: 'Nouvelle tâche', description: '',
-    categorie: cat ? cat.nom : '', sousCategorie: cat ? (sous || cat.sous[0] || '') : '',
-    statut: 'À faire', case: 'a_classer', echeance: '', jalons: [], todo: [], liens: [], dependances: [], notes: '',
-  });
-  hooks.afficher();
-  if (await enregistrer()) {
-    ouvrirFiche(id);
-    const titre = document.querySelector('.fiche-titre');
-    titre.focus(); titre.select();
   }
 }
 
@@ -166,14 +146,9 @@ contenu.addEventListener('drop', async (e) => {
   }
 });
 
-// Bouton « Nouvelle tâche » (Matrice, ou tableau de bord vide : on passe d'abord
-// dans la Matrice), clic ou Entrée sur une carte : ouvre la fiche
+// Clic ou Entrée sur une carte : ouvre la fiche
+// (le bouton « + Nouvelle tâche » est géré par nouvelle-tache.js)
 contenu.addEventListener('click', (e) => {
-  if (e.target.id === 'nouvelle') {
-    if (location.hash !== '#matrice') location.hash = 'matrice';
-    nouvelleTache();
-    return;
-  }
   if (e.target.closest('[data-supprimer]')) return; // géré par suppression.js
   const c = e.target.closest('.carte');
   if (c) ouvrirFiche(c.dataset.id);

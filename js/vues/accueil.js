@@ -4,6 +4,7 @@ import { echapper, parEcheance } from '../noyau/outils.js';
 import { blocJalons } from '../composants/jalons.js';
 import { boutonsCategories, filtreActif, filtreCategorie } from '../composants/categories.js';
 import { listeTaches } from '../composants/taches.js';
+import { boutonNouvelleTache } from '../composants/nouvelle-tache.js';
 
 function blocStatuts() {
   const d = etat.donnees;
@@ -28,7 +29,7 @@ export function afficherAccueil() {
       <div class="vide">
         <strong>Aucune tâche pour l'instant</strong>
         Crée ta première tâche.
-        <div class="vide-action"><button class="bouton violet" id="nouvelle">+ Nouvelle tâche</button></div>
+        <div class="vide-action">${boutonNouvelleTache()}</div>
       </div>` : ''}
     <div class="grille">
       ${blocJalons()}
@@ -36,7 +37,10 @@ export function afficherAccueil() {
     </div>
     ${d.taches.length === 0 ? '' : `
     <section class="bloc bloc-large">
-      <h2>${titreListe} · ${taches.length}</h2>
+      <div class="liste-tete">
+        <h2>${titreListe} · ${taches.length}</h2>
+        ${boutonNouvelleTache()}
+      </div>
       ${boutonsCategories()}
       ${listeTaches(taches)}
     </section>`}`;
