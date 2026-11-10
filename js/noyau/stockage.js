@@ -214,6 +214,59 @@ export async function ouvrirProjet(id) {
   return true;
 }
 
+// Contenu d'un fichier d'export (.json) : une étiquette « Ormagedon », le numéro de format
+// du fichier, la date, puis la liste des projets (un seul, ou tous), tels qu'enregistrés.
+// L'import (étape 1.5, point 4) lira toujours cette même forme.
+export const FORMAT_EXPORT = 1;
+export async function contenuExport(ids) {
+  await file; // les dernières modifications sont enregistrées d'abord
+  const projets = ids.map((id) => lire(cleProjet(id))).filter((d) => d && typeof d === 'object');
+  projets.forEach((d) => { delete d.tropRecent; });
+  return { app: 'Ormagedon', format: FORMAT_EXPORT, exporteLe: new Date().toISOString(), projets };
+}
+
+// Import d'un fichier exporté (même forme que contenuExport). Chaque projet est mis à
+// la version actuelle, complété, puis ajouté. Il n'écrase jamais un projet existant :
+// si son id est déjà pris, il en reçoit un nouveau. Renvoie { ids, ignores } ;
+// lève une erreur avec un message simple si le fichier n'est pas un fichier Ormagedon.
+export async function importerProjets(contenu) {
+  if (!contenu || contenu.app !== 'Ormagedon' || !Array.isArray(contenu.projets)) {
+    throw new Error("Ce fichier n'est pas un export d'Ormagedon");
+  }
+  if (contenu.format > FORMAT_EXPORT) {
+    throw new Error("Ce fichier vient d'une version plus récente d'Ormagedon : recharge la page pour mettre l'app à jour");
+  }
+  await file;
+  const ids = [];
+  let ignores = 0;
+  for (const brut of contenu.projets) {
+    const valide = brut && typeof brut === 'object' && brut.projet && typeof brut.projet === 'object' && Array.isArray(brut.taches);
+    if (!valide || !mettreAJourDonnees(brut)) { ignores++; continue; } // abîmé, ou d'une version plus récente
+    const d = completerDonnees(brut);
+    delete d.tropRecent;
+    const libre = typeof d.id === 'string' && /^p-[\w-]+$/.test(d.id) && lire(cleProjet(d.id)) === null;
+    if (!libre) d.id = nouvelId();
+    d.modifieLe = new Date().toISOString(); // nouveau sur cet appareil : en tête de « Mes projets »
+    try {
+      ecrire(cleProjet(d.id), d);
+      mettreAJourListe(d);
+    } catch {
+      throw new Error(ids.length
+        ? `Stockage de l'appareil plein : seulement ${ids.length} projet(s) importé(s)`
+        : "Import impossible : le stockage de l'appareil est plein ou bloqué");
+    }
+    ids.push(d.id);
+  }
+  return { ids, ignores };
+}
+
+// Date du dernier export, sur cet appareil : { <id du projet>: date, tous: date }
+const CLE_EXPORTS = 'ormagedon-exports';
+export const derniersExports = () => lire(CLE_EXPORTS) || {};
+export function noterExport(cle) {
+  try { ecrire(CLE_EXPORTS, { ...derniersExports(), [cle]: new Date().toISOString() }); } catch { /* sans importance */ }
+}
+
 // Supprime un projet de l'appareil. Renvoie ses données (pour « Annuler »), ou null.
 // Si c'était le projet ouvert, plus aucun projet n'est ouvert.
 export async function supprimerProjet(id) {

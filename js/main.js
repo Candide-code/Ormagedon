@@ -1,7 +1,7 @@
 // Corps de la page : en-tête, onglets, choix de la vue, démarrage.
 // Chaque fonction principale vit dans son propre fichier :
 //   noyau/      état partagé, outils, enregistrement sur l'appareil
-//   composants/ jalons, catégories, liste des tâches, fiche
+//   composants/ jalons, catégories, liste des tâches, fiche, réglages (rideau)
 //   vues/       mes projets, nouveau projet, tableau de bord, matrice, calendrier
 import { etat, $, hooks } from './noyau/etat.js';
 import { dateFr, joursAvant, tacheParId, texteModifieLe } from './noyau/outils.js';
@@ -12,6 +12,7 @@ import { afficherNouveauProjet } from './vues/nouveau-projet.js';
 import { afficherAccueil } from './vues/accueil.js';
 import { afficherMatrice } from './vues/matrice.js';
 import { afficherCalendrier } from './vues/calendrier.js';
+import { rafraichirReglages } from './composants/reglages.js';
 
 const VUES = {
   projets: afficherProjets, nouveau: afficherNouveauProjet,
@@ -83,10 +84,12 @@ function toutAfficher() {
   if (etat.ficheId) {
     if (etat.donnees && tacheParId(etat.ficheId)) afficherFiche(); else fermerFiche();
   }
+  rafraichirReglages();
 }
 
 hooks.afficher = afficher;
 hooks.toutAfficher = toutAfficher;
+hooks.entete = afficherEntete;
 
 document.querySelectorAll('.onglet').forEach((b) => b.addEventListener('click', () => {
   if (!b.disabled) location.hash = b.dataset.vue;

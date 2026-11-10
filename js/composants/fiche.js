@@ -48,7 +48,7 @@ export function afficherFiche() {
       ${champ('Statut', select('statut', d.statuts, t.statut))}
       ${champ('Case de la matrice', select('case', [{ valeur: 'a_classer', libelle: 'À classer' }, ...CASES.map((c) => ({ valeur: c.id, libelle: c.id.slice(1) + ' · ' + c.nom }))], t.case || 'a_classer'))}
       ${champ('Catégorie', select('categorie', [{ valeur: '', libelle: 'Sans catégorie' }, ...d.categories.map((c) => c.nom)], t.categorie || ''))}
-      ${cat && cat.sous.length ? champ('Sous-catégorie', select('sousCategorie', cat.sous, t.sousCategorie)) : ''}
+      ${cat && cat.sous.length ? champ('Sous-catégorie', select('sousCategorie', [{ valeur: '', libelle: 'Aucune' }, ...cat.sous], t.sousCategorie || '')) : ''}
       ${champ('Échéance', `<input type="date" data-champ="echeance" value="${echapper(t.echeance)}">`)}
     </div>
 

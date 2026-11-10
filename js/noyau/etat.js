@@ -25,6 +25,7 @@ export const TERMINES = ['Fait', 'Reporté', 'Abandonné'];
 export const hooks = {
   afficher: () => {},      // redessine la vue active
   toutAfficher: () => {},  // redessine la vue active + la fiche ouverte
+  entete: () => {},        // redessine seulement l'en-tête (nom du projet, compte à rebours)
 };
 
 // Préférences de filtre gardées dans le navigateur (facultatif)

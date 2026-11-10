@@ -18,12 +18,18 @@ export function htmlCategorie(t, avecSous = true, classe = 'code-cat') {
   return `<span class="${classe}">${echapper(texte)}</span>`;
 }
 
-// Pied de page : « Modifié le 09/11 à 13:35 » (heure locale), rien si pas de date
-export function texteModifieLe(isoComplet) {
+// « 09/11 à 13:35 » (heure locale), '' si pas de date
+export function dateHeure(isoComplet) {
   const d = isoComplet ? new Date(isoComplet) : null;
   if (!d || isNaN(d)) return '';
   const deux = (n) => String(n).padStart(2, '0');
-  return `Modifié le ${deux(d.getDate())}/${deux(d.getMonth() + 1)} à ${deux(d.getHours())}:${deux(d.getMinutes())}`;
+  return `${deux(d.getDate())}/${deux(d.getMonth() + 1)} à ${deux(d.getHours())}:${deux(d.getMinutes())}`;
+}
+
+// Pied de page : « Modifié le 09/11 à 13:35 », rien si pas de date
+export function texteModifieLe(isoComplet) {
+  const t = dateHeure(isoComplet);
+  return t ? 'Modifié le ' + t : '';
 }
 
 export function echapper(t) {

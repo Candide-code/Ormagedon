@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/calendrier.css">
   <link rel="stylesheet" href="css/fiche.css">
   <link rel="stylesheet" href="css/projets.css">
+  <link rel="stylesheet" href="css/reglages.css">
 </head>
 <body>
   <header class="entete">
@@ -21,7 +22,13 @@
       <h1 class="logo"><a href="#projets" class="logo-lien" title="Mes projets" aria-label="Ormagedon, revenir à Mes projets"><svg class="logo-o" viewBox="10 8 46 46" aria-hidden="true"><circle cx="32" cy="32" r="17" fill="none" style="stroke: var(--violet)" stroke-width="7"/><circle cx="44" cy="20" r="6.5" style="fill: var(--texte); stroke: var(--fond)" stroke-width="3"/></svg><span aria-hidden="true">rmagedon</span></a></h1>
       <p class="discret" id="sous-titre"></p>
     </div>
-    <div class="compte" id="compte" aria-live="polite"></div>
+    <div class="entete-droite">
+      <div class="compte" id="compte" aria-live="polite"></div>
+      <!-- Icône des Réglages du projet ouvert (roue dentée) : ouvre le rideau des Réglages -->
+      <button type="button" class="reglages-lien" id="reglages-bouton" title="Réglages" aria-label="Réglages du projet" aria-controls="reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
   </header>
 
   <nav class="onglets" aria-label="Vues">
@@ -40,6 +47,9 @@
   <div class="voile" id="voile"></div>
   <aside class="fiche" id="fiche" aria-hidden="true" aria-label="Fiche de la tâche">
     <div id="fiche-contenu"></div>
+  </aside>
+  <aside class="rideau" id="reglages" aria-hidden="true" aria-label="Réglages du projet">
+    <div id="reglages-contenu"></div>
   </aside>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

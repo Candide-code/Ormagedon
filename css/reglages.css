@@ -1,0 +1,90 @@
+/* Icône ⚙ de l'en-tête et rideau des Réglages (à droite, comme la fiche d'une tâche) */
+.entete-droite { display: flex; align-items: flex-start; gap: 20px; }
+.reglages-lien {
+  display: inline-flex; padding: 6px; border: none; background: none; cursor: pointer;
+  border-radius: 8px; color: var(--discret); transition: color 0.15s, background 0.15s;
+}
+.reglages-lien svg { width: 22px; height: 22px; }
+.reglages-lien:hover { color: var(--texte); background: var(--surface-2); }
+.reglages-lien.actif { color: var(--violet-clair); }
+.reglages-lien:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+/* Pas de réglages sur « Mes projets » et « Nouveau projet » (aucun projet affiché) */
+.page-projets .reglages-lien { display: none; }
+
+/* Le rideau : même largeur et même voile que la fiche ; plein écran sur téléphone */
+.rideau {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%);
+  background: var(--surface); border-left: 1px solid var(--bordure);
+  padding: 20px 22px 28px; overflow-y: auto; z-index: 11;
+  transform: translateX(100%); transition: transform 0.2s ease; visibility: hidden;
+}
+body.reglages-ouverts .voile { opacity: 1; pointer-events: auto; }
+body.reglages-ouverts .rideau { transform: none; visibility: visible; }
+
+.rg-tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; min-height: 32px; }
+.rg-titre { margin: 0; font-size: 18px; font-weight: 600; }
+.rg-tete + .rg-titre { margin-bottom: 18px; }
+.rg-retour {
+  background: none; border: none; padding: 4px 6px 4px 0; cursor: pointer;
+  font: inherit; font-size: 14px; color: var(--violet-clair);
+}
+.rg-retour:hover { color: var(--texte); }
+
+/* Menu : une ligne par sous-page, titre seul */
+.rg-menu { display: flex; flex-direction: column; margin-top: 8px; }
+.rg-entree {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  background: none; border: none; border-top: 1px solid var(--bordure); cursor: pointer;
+  font: inherit; font-size: 15px; color: var(--texte); text-align: left; padding: 14px 4px;
+}
+.rg-entree:last-child { border-bottom: 1px solid var(--bordure); }
+.rg-entree span { color: var(--discret); font-size: 18px; }
+.rg-entree:hover { background: var(--surface-2); }
+.rg-entree:focus-visible { outline-offset: -2px; }
+
+/* Champs des sous-pages */
+.rg-champ { display: flex; flex-direction: column; gap: 6px; font-size: 14px; margin-bottom: 18px; }
+.rg-champ > span:first-child, .rg-champ > label { font-weight: 500; }
+.rg-ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rg-ligne input[type="date"] { width: auto; min-width: 180px; }
+
+/* Catégories et sous-catégories */
+.rg-liste { list-style: none; margin: 0 0 18px; padding: 0; }
+.rg-cat { padding: 12px 0; border-top: 1px solid var(--bordure); }
+.rg-cat:last-child { border-bottom: 1px solid var(--bordure); }
+.rg-ligne-nom { display: flex; align-items: center; gap: 6px; }
+.rg-liste-sous .rg-ligne-nom { margin-bottom: 8px; }
+.rg-cat-info { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px; }
+.rg-sous-lien {
+  background: none; border: none; padding: 2px 0; cursor: pointer;
+  font: inherit; color: var(--violet-clair);
+}
+.rg-sous-lien:hover { color: var(--texte); }
+.rg-question {
+  margin-top: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
+  background: var(--surface-2); border: 1px solid var(--bordure); border-radius: 8px; font-size: 14px;
+}
+.rg-question p { margin: 0; color: var(--discret); }
+.rg-question .case-cocher { color: var(--texte); }
+.rg-question input[type="radio"] { accent-color: var(--violet); width: 16px; height: 16px; }
+.rg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.rg-ajout { display: flex; gap: 8px; }
+.rg-ajout input { flex: 1; min-width: 0; }
+.rg-ajout .bouton { flex: none; }
+
+/* Données */
+.rg-section + .rg-section { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--bordure); }
+.rg-sous-titre {
+  margin: 0 0 6px; font-size: 13px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--discret);
+}
+.rg-aide { margin: 0 0 14px; font-size: 13px; }
+.rg-export { margin-bottom: 14px; }
+.rg-rappel { margin: 4px 0 0; font-size: 13px; }
+
+@media (max-width: 640px) {
+  /* L'icône reste en haut à droite, même quand l'en-tête passe en colonne */
+  .entete { position: relative; }
+  .reglages-lien { position: absolute; top: 22px; right: 12px; }
+  .rideau { border-left: none; padding: 18px 16px 24px; }
+}
