@@ -20,6 +20,7 @@ body.fiche-ouverte .fiche { transform: none; visibility: visible; }
 .fiche textarea.fiche-titre {
   font-size: 18px; font-weight: 600; background: none; border-color: transparent;
   padding: 4px 6px; margin-bottom: 6px; resize: none;
+  overflow: hidden; /* sa hauteur suit le texte (fiche.js, ajusterTitre) : pas de barre de défilement */
 }
 .fiche textarea.fiche-titre:hover, .fiche textarea.fiche-titre:focus { border-color: var(--bordure); background: var(--surface-2); }
 .fiche-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 4px; }

@@ -54,10 +54,15 @@
 .carte-bas .retard { color: var(--erreur); font-weight: 600; }
 .carte-bas .bloquee { color: var(--alerte); }
 
+/* Tablette : « À classer » au-dessus, les 4 cases restent en 2 × 2 avec leurs axes */
 @media (max-width: 900px) {
-  .matrice { grid-template-columns: 1fr; }
+  .matrice { grid-template-columns: minmax(0, 1fr); }
   .zone[data-case="a_classer"] { position: static; max-height: none; }
-  .quadrants { grid-template-columns: 1fr; grid-template-rows: none; }
-  .axe { display: none; }
+  .quadrants { grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr); }
   .barre .bouton { margin-left: 0; }
+}
+/* Téléphone : une seule colonne, sans les axes */
+@media (max-width: 699px) {
+  .quadrants { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .axe { display: none; }
 }

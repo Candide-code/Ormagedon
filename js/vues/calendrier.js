@@ -5,7 +5,7 @@
 // Clic sur une date → ses tâches dans la colonne de droite ; clic sur un code → fiche.
 import { etat, $, hooks } from '../noyau/etat.js';
 import { echapper, dateFr, classeStatut, parEcheance, htmlCategorie } from '../noyau/outils.js';
-import { boutonsCategories, filtreCategorie } from '../composants/categories.js';
+import { boutonsCategories, filtreCategorie, filtreActif } from '../composants/categories.js';
 import { jalonsTries } from '../composants/jalons.js';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
@@ -66,7 +66,7 @@ function colonneJour(j, { taches = [], jalons = [] }, max, auj, choisi, { paire,
   return `<button type="button" class="${cls}" data-jour="${j}" aria-pressed="${j === choisi}" aria-label="${nomJour(j)} ${dateFr(j)} : ${resume}" title="${nomJour(j)} ${dateFr(j)} · ${resume}">${contenu}</button>`;
 }
 
-function colonneDroite(j, { taches = [], jalons = [] }) {
+function colonneDroite(j, { taches = [], jalons = [] }, vide) {
   return `
     <section class="bloc cal-jour" aria-live="polite">
       <h2>Échéances du ${dateFr(j)}</h2>
@@ -81,7 +81,7 @@ function colonneDroite(j, { taches = [], jalons = [] }) {
               <span class="statut ${classeStatut(t.statut)}">${echapper(t.statut)}</span>
             </div>
           </li>`).join('')}
-      </ul>` : '<p class="discret">Clique sur une barre du graphique pour voir ses tâches.</p>'}
+      </ul>` : vide ? '' : '<p class="discret">Clique sur une barre du graphique pour voir ses tâches.</p>'}
     </section>`;
 }
 
@@ -105,6 +105,10 @@ export function afficherCalendrier() {
   jalons.forEach((x) => ajouter(x.date, 'jalons', x));
   // Même échelle dans les deux vues, pour comparer
   const max = Math.max(1, ...Object.values(groupes).map((g) => g.taches.length));
+  // Rien à montrer (ni échéance dans le filtre, ni jalon) : message par-dessus le graphique gris
+  const vide = !taches.length && !jalons.length;
+  const { cat, sans } = filtreActif();
+  const filtre = !!(cat || sans);
 
   // Zoom sur une semaine (ignoré si la semaine n'est plus dans la période)
   const zoom = lundis.includes(etat.semaineZoom) ? etat.semaineZoom : null;
@@ -160,10 +164,14 @@ export function afficherCalendrier() {
             <span><span class="losange">◆</span> Jalon</span>
           </div>
         </div>
-        <div class="cal-defile">${grille}</div>
+        <div class="cal-cadre">
+          <div class="cal-defile">${grille}</div>
+          ${vide ? `<div class="cal-vide"><strong>${filtre ? 'Aucune échéance dans cette catégorie' : "Aucune échéance pour l'instant"}</strong>
+            <span class="discret">Donne une échéance à une tâche (dans sa fiche) ou ajoute un jalon.</span></div>` : ''}
+        </div>
         ${sansDate ? `<p class="discret cal-note">${pluriel(sansDate, 'tâche')} sans échéance, non affichée${sansDate > 1 ? 's' : ''} ici.</p>` : ''}
       </section>
-      ${colonneDroite(choisi, groupes[choisi] || {})}
+      ${colonneDroite(choisi, groupes[choisi] || {}, vide)}
     </div>`;
 }
 

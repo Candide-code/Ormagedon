@@ -41,7 +41,7 @@ export function afficherFiche() {
       <span><span class="code">${echapper(t.id)}</span>${htmlCategorie(t)}</span>
       <button class="fermer" id="fiche-fermer" aria-label="Fermer la fiche">×</button>
     </div>
-    <textarea class="fiche-titre" data-champ="titre" rows="2" aria-label="Titre">${echapper(t.titre)}</textarea>
+    <textarea class="fiche-titre" data-champ="titre" rows="1" aria-label="Titre">${echapper(t.titre)}</textarea>
     <textarea data-champ="description" rows="3" placeholder="Description en une phrase" aria-label="Description">${echapper(t.description)}</textarea>
 
     <div class="fiche-grille">
@@ -67,10 +67,10 @@ export function afficherFiche() {
 
     <section class="fiche-section">
       <h4>Jalons concernés</h4>
-      <div class="jalons-choix">
+      ${etat.donnees.jalons.length ? `<div class="jalons-choix">
         ${jalonsTries().map((j) => `
           <label class="case-cocher"><input type="checkbox" data-jalon="${echapper(j.id)}" ${(t.jalons || []).includes(j.id) ? 'checked' : ''}> ${dateFr(j.date)} · ${echapper(j.titre)}</label>`).join('')}
-      </div>
+      </div>` : '<p class="discret fl-vide">Aucun jalon. Ajoute-en un dans le tableau de bord.</p>'}
     </section>
 
     <section class="fiche-section">
@@ -90,7 +90,19 @@ export function afficherFiche() {
       <button class="bouton danger" id="supprimer">Supprimer la tâche</button>
     </div>`;
   apresAffichageLiens();
+  ajusterTitre();
 }
+
+// Le titre grandit avec le texte : on lit tout, même un titre long (sur téléphone surtout)
+function ajusterTitre() {
+  const el = document.querySelector('.fiche-titre');
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 2 + 'px'; // + 2 : la bordure (1 px en haut, 1 px en bas)
+}
+// Pendant la frappe, et quand la largeur change (téléphone tourné, fenêtre redimensionnée)
+document.addEventListener('input', (e) => { if (e.target.classList && e.target.classList.contains('fiche-titre')) ajusterTitre(); });
+window.addEventListener('resize', ajusterTitre);
 
 export async function modifierTache(t, mutation, message = 'Enregistré') {
   mutation(t);

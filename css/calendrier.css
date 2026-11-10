@@ -10,6 +10,14 @@
 .cal-legende .seg { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
 
 .cal-defile { overflow-x: auto; padding-bottom: 4px; color-scheme: dark; }
+/* Calendrier vide : message au milieu, le graphique gris reste visible derrière */
+.cal-cadre { position: relative; }
+.cal-vide {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 16px; text-align: center; pointer-events: none; font-size: 14px;
+}
+.cal-vide strong { font-size: 16px; font-weight: 500; }
+.cal-vide > * { background: rgba(22, 22, 27, 0.85); padding: 2px 10px; border-radius: 6px; }
 .cal-grille { display: grid; grid-template-columns: repeat(var(--jours), minmax(18px, 1fr)); min-width: calc(var(--jours) * 18px); }
 
 .semaine {
@@ -76,7 +84,8 @@ button.jour:focus-visible { outline: 2px solid var(--violet); outline-offset: -2
 .cal-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 
 @media (max-width: 900px) {
-  .cal { grid-template-columns: 1fr; }
+  /* minmax(0, 1fr) : la colonne garde la largeur de l'écran, seul le graphique défile (.cal-defile) */
+  .cal { grid-template-columns: minmax(0, 1fr); }
   .cal-jour { position: static; }
 }
 
