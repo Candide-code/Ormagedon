@@ -3,9 +3,11 @@
 // sous chaque carte : « Dupliquer » (même formulaire, prérempli) et « Supprimer ».
 // On y revient en cliquant sur le logo (lien #projets dans l'en-tête).
 import { etat, $, hooks, repartirDeZero } from '../noyau/etat.js';
-import { echapper, dateFr, joursAvant, texteModifieLe, toast } from '../noyau/outils.js';
-import { listerProjets, ouvrirProjet, supprimerProjet, restaurerProjet } from '../noyau/stockage.js';
+import { echapper, dateFr, joursAvant, texteModifieLe, dateHeure, toast } from '../noyau/outils.js';
+import { listerProjets, ouvrirProjet, supprimerProjet, restaurerProjet, derniersExports } from '../noyau/stockage.js';
 import { preparerNouveau, preparerCopie } from './nouveau-projet.js';
+import { dialogue } from '../composants/dialogue.js';
+import { exporterProjet } from '../composants/reglages-donnees.js';
 
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 const nomAffiche = (p) => p.nom.trim() || 'Projet sans nom';
@@ -46,17 +48,38 @@ export function afficherProjets() {
       : '<div class="vide"><strong>Aucun projet</strong>Crée ton premier projet.</div>'}`;
 }
 
-// Suppression : confirmation, puis « Annuler » possible pendant 8 s (comme pour une tâche)
+// Suppression : fenêtre d'attention (Annuler / Exporter puis supprimer / OK),
+// puis « Annuler » possible pendant 8 s (comme pour une tâche)
 async function supprimer(id) {
   const p = listerProjets().find((x) => x.id === id);
   if (!p) return;
   const nom = nomAffiche(p);
   const contenu = p.nbTaches ? `Ses ${pluriel(p.nbTaches, 'tâche')}, ses jalons et ses catégories seront supprimés.` : 'Ses jalons et ses catégories seront supprimés.';
-  if (!confirm(`Êtes-vous sûr·e de vouloir supprimer le projet « ${nom} » ?\n\n${contenu}\n\nTu pourras annuler pendant quelques secondes, ensuite la suppression est définitive.`)) return;
+  const exporte = derniersExports()[id];
+  const choix = await dialogue({
+    titre: 'Attention',
+    alerte: true,
+    html: `
+      <p>Êtes-vous sûr·e de vouloir supprimer le projet <strong>« ${echapper(nom)} »</strong> ?</p>
+      <p>${contenu}</p>
+      <p class="discret">${exporte ? 'Dernier export : ' + dateHeure(exporte) : 'Jamais exporté sur cet appareil'}</p>
+      <p class="discret">Tu pourras annuler pendant quelques secondes, ensuite la suppression est définitive.</p>`,
+    boutons: [
+      { valeur: null, libelle: 'Annuler' },
+      { valeur: 'exporter', libelle: 'Exporter puis supprimer' },
+      { valeur: 'ok', libelle: 'OK', classe: 'danger' },
+    ],
+  });
+  if (!choix) return;
+  let fichier = '';
+  if (choix === 'exporter') {
+    fichier = await exporterProjet(id);
+    if (!fichier) return; // export impossible : on ne supprime pas
+  }
   const donnees = await supprimerProjet(id);
   if (!donnees) return;
   hooks.toutAfficher();
-  toast(`« ${nom} » supprimé`, {
+  toast(`« ${nom} » supprimé${fichier ? ' (copie exportée : ' + fichier + ')' : ''}`, {
     libelle: 'Annuler',
     faire: () => {
       if (!restaurerProjet(donnees)) return;

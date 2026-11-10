@@ -1,4 +1,13 @@
 /* Bloc des jalons (tableau de bord) */
+.jalon-passe { opacity: 0.5; } /* date passée : grisé */
+.jalons-vide { margin: 0; font-size: 14px; }
+/* Ligne cliquable (modifier le jalon) : même aspect qu'une ligne de liste */
+.jalon-ligne {
+  flex: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  background: none; border: none; padding: 0; margin: 0; font: inherit; color: inherit;
+  text-align: left; cursor: pointer; border-radius: 4px;
+}
+.jalon-ligne:hover .jalon-titre { color: var(--violet-clair); }
 .avancement {
   display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 999px;
   background: var(--violet-fond); color: var(--violet-clair); font-size: 12px; font-variant-numeric: tabular-nums;

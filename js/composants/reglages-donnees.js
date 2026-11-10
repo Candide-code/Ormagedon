@@ -3,7 +3,6 @@
 // (sur iPhone, Safari demande où l'enregistrer). La date du dernier export est rappelée.
 // Importer : on choisit un fichier exporté (PC ou téléphone) ; ses projets sont ajoutés
 // sans jamais en écraser un. Un seul projet importé : il s'ouvre ; plusieurs : « Mes projets ».
-// À venir (étape 1.5) : « Exporter puis supprimer » (point 5).
 import { etat, $, hooks, repartirDeZero } from '../noyau/etat.js';
 import { toast, dateHeure } from '../noyau/outils.js';
 import { listerProjets, contenuExport, derniersExports, noterExport, importerProjets, ouvrirProjet } from '../noyau/stockage.js';
@@ -92,15 +91,29 @@ function telecharger(nom, contenu) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-async function exporter(quoi, nav) {
-  const tous = quoi === 'tous';
-  const ids = tous ? listerProjets().map((p) => p.id) : [etat.donnees.id];
-  const contenu = await contenuExport(ids);
-  if (!contenu.projets.length) { toast('Rien à exporter'); return; }
-  const nom = tous ? `ormagedon-tous-les-projets-${dateFichier()}.json`
-    : `${nomFichier(etat.donnees.projet.nom)}-${dateFichier()}.json`;
+// Exporte un projet (ouvert ou non) ; renvoie le nom du fichier, ou '' si rien à exporter.
+// Aussi utilisé par « Exporter puis supprimer » dans « Mes projets ».
+export async function exporterProjet(id) {
+  const contenu = await contenuExport([id]);
+  if (!contenu.projets.length) { toast('Rien à exporter'); return ''; }
+  const nom = `${nomFichier(contenu.projets[0].projet.nom || '')}-${dateFichier()}.json`;
   telecharger(nom, contenu);
-  noterExport(tous ? 'tous' : etat.donnees.id);
+  noterExport(id);
+  return nom;
+}
+
+async function exporter(quoi, nav) {
+  let nom;
+  if (quoi === 'tous') {
+    const contenu = await contenuExport(listerProjets().map((p) => p.id));
+    if (!contenu.projets.length) { toast('Rien à exporter'); return; }
+    nom = `ormagedon-tous-les-projets-${dateFichier()}.json`;
+    telecharger(nom, contenu);
+    noterExport('tous');
+  } else {
+    nom = await exporterProjet(etat.donnees.id);
+    if (!nom) return;
+  }
   nav.afficher(`[data-exporter="${quoi}"]`);
   toast('Fichier exporté : ' + nom);
 }

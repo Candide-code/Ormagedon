@@ -124,6 +124,26 @@ textarea { resize: vertical; line-height: 1.45; }
 .etat.ko .pastille { background: transparent; border: 1px solid var(--discret); }
 .etat.ko { color: var(--discret); }
 
+/* Petite fenêtre (composants/dialogue.js) */
+.dialogue {
+  width: min(460px, calc(100% - 32px)); padding: 22px 24px 20px; color: var(--texte);
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+.dialogue::backdrop { background: rgba(0, 0, 0, 0.6); }
+.dialogue-titre { margin: 0 0 12px; font-size: 17px; font-weight: 600; }
+.dialogue-titre.alerte { color: var(--alerte); }
+.dialogue-corps { font-size: 14px; }
+.dialogue-corps p { margin: 0 0 10px; }
+.dialogue-champ { display: block; margin-bottom: 12px; }
+.dialogue-champ > span { display: block; font-size: 13px; color: var(--discret); margin-bottom: 4px; }
+.dialogue-corps p.dialogue-erreur { color: var(--erreur); font-size: 13px; margin: 10px 0 0; }
+.dialogue-boutons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.dialogue-boutons .a-gauche { margin-right: auto; } /* ex. « Supprimer » à gauche, loin d'« Enregistrer » */
+@media (max-width: 640px) {
+  .dialogue-boutons { flex-direction: column-reverse; align-items: stretch; } /* OK en haut, Annuler en bas */
+  .dialogue-boutons .a-gauche { margin-right: 0; margin-top: 8px; } /* tout en bas, un peu à l'écart */
+}
+
 /* Message temporaire */
 .toast {
   position: fixed; bottom: 56px; left: 50%; transform: translateX(-50%) translateY(10px);
