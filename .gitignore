@@ -2,6 +2,9 @@
 CLAUDE.md
 ROADMAP.md
 
+# Tests automatiques (pour nous, jamais publiés : décision de Marie, 12/11)
+tests/
+
 # Outils (réglages locaux)
 .claude/
 .vscode/
