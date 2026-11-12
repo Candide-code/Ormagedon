@@ -26,6 +26,16 @@
 .action-projet.danger:hover { color: var(--erreur); }
 .carte-projet-nom { font-size: 16px; font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
 
+/* Bas de « Mes projets » : bouton « Installer l'app » (PC, Android) ou aide (iPhone) */
+.installation {
+  margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--bordure);
+  display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; font-size: 13px;
+}
+.installation:empty { display: none; }
+.installation-aide { margin: 0; flex: 1; min-width: 0; font-size: 14px; }
+.icone-partager { width: 16px; height: 16px; vertical-align: -3px; margin: 0 1px; }
+.installation .fermer { font-size: 22px; }
+
 /* Formulaire « Nouveau projet » */
 .form-projet {
   max-width: 560px; display: flex; flex-direction: column; gap: 20px;

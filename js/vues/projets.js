@@ -8,6 +8,7 @@ import { listerProjets, ouvrirProjet, supprimerProjet, restaurerProjet, derniers
 import { preparerNouveau, preparerCopie } from './nouveau-projet.js';
 import { dialogue } from '../composants/dialogue.js';
 import { exporterProjet } from '../composants/reglages-donnees.js';
+import { blocInstallation } from '../composants/installer.js';
 
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 const nomAffiche = (p) => p.nom.trim() || 'Projet sans nom';
@@ -45,7 +46,8 @@ export function afficherProjets() {
       <button type="button" class="bouton violet" data-nouveau-projet>+ Nouveau projet</button>
     </div>
     ${projets.length ? `<div class="grille-projets">${projets.map(carteProjet).join('')}</div>`
-      : '<div class="vide"><strong>Aucun projet</strong>Crée ton premier projet.</div>'}`;
+      : '<div class="vide"><strong>Aucun projet</strong>Crée ton premier projet.</div>'}
+    ${blocInstallation()}`;
 }
 
 // Suppression : fenêtre d'attention (Annuler / Exporter puis supprimer / OK),

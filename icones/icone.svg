@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Icône d'Ormagedon : « l'anneau-jalon » (validée par Marie le 09/11).
+       Fond noir arrondi, anneau violet (le « O »), point clair posé en haut à droite (un jalon). -->
+  <rect width="64" height="64" rx="14" fill="#16161b"/>
+  <circle cx="32" cy="32" r="16" fill="none" stroke="#8b5cf6" stroke-width="7"/>
+  <circle cx="43.3" cy="20.7" r="6.5" fill="#ececf1" stroke="#16161b" stroke-width="3"/>
+</svg>

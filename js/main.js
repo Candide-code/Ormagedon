@@ -13,6 +13,7 @@ import { afficherAccueil } from './vues/accueil.js';
 import { afficherMatrice } from './vues/matrice.js';
 import { afficherCalendrier } from './vues/calendrier.js';
 import { rafraichirReglages } from './composants/reglages.js';
+import { activerHorsLigne } from './noyau/hors-ligne.js';
 
 const VUES = {
   projets: afficherProjets, nouveau: afficherNouveauProjet,
@@ -97,3 +98,4 @@ document.querySelectorAll('.onglet').forEach((b) => b.addEventListener('click', 
 window.addEventListener('hashchange', afficher);
 
 charger();
+activerHorsLigne();
