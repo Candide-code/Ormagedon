@@ -6,14 +6,18 @@
 .fiche {
   position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%);
   background: var(--surface); border-left: 1px solid var(--bordure);
-  padding: 20px 22px 28px; overflow-y: auto; z-index: 11;
+  padding: calc(20px + var(--sur-haut)) calc(22px + var(--sur-droite)) calc(28px + var(--sur-bas)) 22px; /* zones sûres : voir base.css */
+  overflow-y: auto; z-index: 11;
   transform: translateX(100%); transition: transform 0.2s ease; visibility: hidden;
 }
 #fiche-contenu { min-height: 100%; display: flex; flex-direction: column; }
 body.fiche-ouverte .voile { opacity: 1; pointer-events: auto; }
 body.fiche-ouverte .fiche { transform: none; visibility: visible; }
 
-.fiche-tete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.fiche-tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+/* Code + catégorie : raccourci avec « … » (la catégorie complète est dans les choix plus bas) */
+.fiche-tete > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fiche-tete .fermer { flex: none; }
 .fiche-tete .code { font-size: 15px; }
 .fermer { background: none; border: none; color: var(--discret); font-size: 26px; line-height: 1; cursor: pointer; padding: 0 4px; }
 .fermer:hover { color: var(--texte); }
@@ -41,6 +45,7 @@ body.fiche-ouverte .fiche { transform: none; visibility: visible; }
 .jalons-choix { display: flex; flex-direction: column; gap: 6px; }
 .deps { list-style: none; margin: 8px 0 0; padding: 0; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
 .deps .statut { margin-left: 6px; }
+.deps .code-cat { white-space: normal; } /* une catégorie très longue passe à la ligne */
 /* Liens */
 .liens { list-style: none; margin: 0 0 10px; padding: 0; font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
 .fl-ligne { display: flex; align-items: center; gap: 8px; }

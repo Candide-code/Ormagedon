@@ -15,7 +15,8 @@
 .rideau {
   position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%);
   background: var(--surface); border-left: 1px solid var(--bordure);
-  padding: 20px 22px 28px; overflow-y: auto; z-index: 11;
+  padding: calc(20px + var(--sur-haut)) calc(22px + var(--sur-droite)) calc(28px + var(--sur-bas)) 22px; /* zones sûres : voir base.css */
+  overflow-y: auto; z-index: 11;
   transform: translateX(100%); transition: transform 0.2s ease; visibility: hidden;
 }
 body.reglages-ouverts .voile { opacity: 1; pointer-events: auto; }
@@ -83,8 +84,8 @@ body.reglages-ouverts .rideau { transform: none; visibility: visible; }
 .rg-rappel { margin: 4px 0 0; font-size: 13px; }
 
 @media (max-width: 640px) {
-  /* L'icône reste en haut à droite, même quand l'en-tête passe en colonne */
-  .entete { position: relative; }
-  .reglages-lien { position: absolute; top: 22px; right: 12px; }
-  .rideau { border-left: none; padding: 18px 16px 24px; }
+  /* En-tête compact (base.css) : ⚙ juste à droite de J-45, plus serré */
+  .entete-droite { gap: 8px; flex: none; }
+  .reglages-lien { margin-right: -6px; } /* l'icône s'aligne sur la marge de droite */
+  .rideau { border-left: none; padding: calc(18px + var(--sur-haut)) calc(16px + var(--sur-droite)) calc(24px + var(--sur-bas)) calc(16px + var(--sur-gauche)); }
 }

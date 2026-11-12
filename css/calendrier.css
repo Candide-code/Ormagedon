@@ -80,6 +80,7 @@ button.jour:focus-visible { outline: 2px solid var(--violet); outline-offset: -2
 .cal-jalons li + li { margin-top: 4px; }
 .cal-taches { list-style: none; margin: 0; padding: 0; }
 .cal-taches li { padding: 10px 0; border-top: 1px solid var(--bordure); font-size: 14px; }
+.cal-taches .code-cat { white-space: normal; } /* une catégorie très longue passe à la ligne */
 .cal-taches li:first-child { border-top: none; padding-top: 0; }
 .cal-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 

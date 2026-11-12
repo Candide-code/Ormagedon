@@ -1,0 +1,28 @@
+/* Écrans tactiles (téléphone, tablette) : rien ne doit dépendre du survol de la souris,
+   et chaque bouton doit se toucher facilement du doigt (environ 40 à 44 px).
+   Sur PC à la souris, ce fichier ne change rien. Chargé en dernier dans index.html. */
+
+/* Pas de survol au doigt : le × des cartes de la matrice est toujours visible */
+@media (hover: none) {
+  .carte-haut .suppr { opacity: 1; }
+}
+
+@media (pointer: coarse) {
+  /* Boutons avec du texte : au moins 40 px de haut */
+  .bouton, .bouton.petit, .action-projet, .puce, .rg-retour { min-height: 40px; }
+  .bouton.petit { min-width: 40px; }
+  .sous-puces .puce { min-height: 36px; }
+  .semaine { min-height: 36px; }
+
+  /* Petites icônes et liens dans le texte : zone touchable agrandie tout autour
+     (couche invisible), sans changer la mise en page */
+  .suppr, .fermer, .fl-btn, .code.lien, .reglages-lien, .logo-lien, .jalon-ligne, .rg-sous-lien { position: relative; }
+  .suppr::after, .fermer::after, .fl-btn::after { content: ''; position: absolute; inset: -12px; }
+  .code.lien::after { content: ''; position: absolute; inset: -10px -8px; }
+  .reglages-lien::after { content: ''; position: absolute; inset: -5px; }
+  .logo-lien::after { content: ''; position: absolute; inset: -9px -4px; }
+  .jalon-ligne::after, .rg-sous-lien::after { content: ''; position: absolute; inset: -6px 0; } /* -6 px : la moitié de l'écart entre deux lignes */
+
+  /* Cases à cocher plus grandes (le texte à côté se touche aussi) */
+  .case-cocher input, .todo input[type="checkbox"] { width: 22px; height: 22px; }
+}

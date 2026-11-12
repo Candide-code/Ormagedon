@@ -149,6 +149,12 @@ export function afficherCalendrier() {
       </div>`;
   }
 
+  // Défilement du graphique (téléphone, tablette) : gardé si on reste dans la même vue
+  // (clic sur un jour, filtre…), sinon le graphique s'ouvre sur la semaine d'aujourd'hui
+  const mode = zoom || 'ensemble';
+  const avant = document.querySelector('.cal-defile');
+  const garder = avant && avant.dataset.mode === mode ? avant.scrollLeft : null;
+
   $('contenu').innerHTML = `
     <section class="bloc bloc-large cal-filtres">
       ${boutonsCategories()}
@@ -165,7 +171,7 @@ export function afficherCalendrier() {
           </div>
         </div>
         <div class="cal-cadre">
-          <div class="cal-defile">${grille}</div>
+          <div class="cal-defile" data-mode="${mode}">${grille}</div>
           ${vide ? `<div class="cal-vide"><strong>${filtre ? 'Aucune échéance dans cette catégorie' : "Aucune échéance pour l'instant"}</strong>
             <span class="discret">Donne une échéance à une tâche (dans sa fiche) ou ajoute un jalon.</span></div>` : ''}
         </div>
@@ -173,6 +179,14 @@ export function afficherCalendrier() {
       </section>
       ${colonneDroite(choisi, groupes[choisi] || {}, vide)}
     </div>`;
+
+  const defile = document.querySelector('.cal-defile');
+  if (defile.scrollWidth <= defile.clientWidth) return; // tout tient : rien à faire
+  if (garder !== null) { defile.scrollLeft = garder; return; }
+  // Colonnes de même largeur. Vue d'ensemble : le lundi de cette semaine au bord gauche ;
+  // zoom sur la semaine en cours : aujourd'hui, avec la veille visible à gauche
+  const i = zoom ? jours.indexOf(auj) - 1 : jours.indexOf(semaineDe(auj));
+  defile.scrollLeft = i > 0 ? Math.round((i / jours.length) * defile.querySelector('.cal-grille').scrollWidth) : 0;
 }
 
 // Zoom sur une semaine : le jour choisi devient le premier jour de la semaine

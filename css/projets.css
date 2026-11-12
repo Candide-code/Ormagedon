@@ -4,7 +4,7 @@
   font-size: 13px; font-weight: 600; text-transform: uppercase;
   letter-spacing: 0.06em; color: var(--discret);
 }
-.grille-projets { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.grille-projets { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 16px; } /* min() : rétrécit sur un écran très étroit */
 /* Carte : la grande zone ouvre le projet, la ligne du bas porte Dupliquer / Supprimer */
 .carte-projet {
   display: flex; flex-direction: column;

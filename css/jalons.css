@@ -7,6 +7,9 @@
   background: none; border: none; padding: 0; margin: 0; font: inherit; color: inherit;
   text-align: left; cursor: pointer; border-radius: 4px;
 }
+.jalon-ligne { min-width: 0; }
+.jalon-ligne > :first-child { min-width: 0; } /* titre très long : passe à la ligne au lieu d'élargir la page */
+.jalon-ligne > :last-child { flex: none; }
 .jalon-ligne:hover .jalon-titre { color: var(--violet-clair); }
 .avancement {
   display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 999px;
@@ -16,4 +19,5 @@
 .a-verifier {
   color: var(--alerte); border: 1px solid var(--alerte); border-radius: 999px;
   padding: 0 8px; font-size: 12px; margin-left: 6px;
+  white-space: nowrap; display: inline-block; /* pastille jamais coupée en deux */
 }

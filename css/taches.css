@@ -9,10 +9,13 @@
 .taches p { margin: 6px 0 0; font-size: 14px; }
 .taches p.note { color: var(--texte); border-left: 2px solid var(--violet); padding-left: 10px; }
 .tache-tete { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+/* « T1 · Catégorie › Sous-catégorie » : raccourci avec « … » si la catégorie est très longue */
+.tache-tete > .nowrap:first-child { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .tache-titre { font-weight: 500; }
 .tache-date { margin-left: auto; font-size: 13px; }
 
-.editable { border-radius: 4px; outline: none; cursor: text; transition: background 0.15s; }
+.editable { border-radius: 4px; outline: none; cursor: text; transition: background 0.15s;
+  overflow-wrap: anywhere; /* le navigateur impose « break-word » aux zones modifiables, qui laisse un mot long élargir la ligne */ }
 .editable:hover { background: var(--surface-2); }
 .editable:focus { background: var(--surface-2); box-shadow: 0 0 0 1px var(--violet); color: var(--texte); }
 .editable:empty::before { content: attr(data-vide); color: var(--discret); opacity: 0.6; font-style: italic; }

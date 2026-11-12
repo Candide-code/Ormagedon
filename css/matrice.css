@@ -44,7 +44,7 @@
 .carte-haut { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .carte-haut .code { flex: none; }
 .carte-cat { color: var(--discret); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; margin-left: -4px; } /* l'écart de 8 px tient lieu d'espace avant « · » */
-.carte-haut .statut { margin-left: auto; font-size: 11px; padding: 0 7px; }
+.carte-haut .statut { margin-left: auto; font-size: 11px; padding: 0 7px; flex: none; } /* garde sa largeur : c'est la catégorie qui se raccourcit (…) */
 /* × visible au survol de la carte (ou au clavier) */
 .carte-haut .suppr { margin-left: auto; font-size: 16px; opacity: 0; }
 .carte-haut .statut + .suppr { margin-left: 0; }

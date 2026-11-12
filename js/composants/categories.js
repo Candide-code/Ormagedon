@@ -24,7 +24,8 @@ export function filtreCategorie(t) {
 }
 
 function puce(valeur, contenu, nb, active) {
-  return `<button type="button" class="puce ${active ? 'active' : ''}" data-filtre="${echapper(valeur)}" aria-pressed="${active}">${contenu}<span class="nb">${nb}</span></button>`;
+  // contenu est déjà échappé ; il sert aussi de bulle (nom complet si raccourci avec « … »)
+  return `<button type="button" class="puce ${active ? 'active' : ''}" data-filtre="${echapper(valeur)}" aria-pressed="${active}" title="${contenu}"><span class="puce-nom">${contenu}</span><span class="nb">${nb}</span></button>`;
 }
 
 export function boutonsCategories() {
